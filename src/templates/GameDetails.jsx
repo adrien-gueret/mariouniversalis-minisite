@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet';
 import { graphql } from 'gatsby';
 import styled from 'styled-components';
 
+import External from '../modules/icons/External';
 import MainLayout from '../modules/layouts/MainLayout';
 import { Block, Image } from '../modules/ui';
 
@@ -67,6 +68,16 @@ const NoManual = styled.span`
   color: ${({ theme }) => theme.palette.text.light};
 `;
 
+const ExternalLink = styled.a`
+  vertical-align: middle;
+
+  & svg {
+    width: ${({ theme }) => theme.spacing(2)};
+    vertical-align: middle;
+    margin-left: ${({ theme }) => theme.spacing(0.5)};
+  }
+`;
+
 export default function GameDetails({ data }) {
   const { game } = data.mu;
 
@@ -125,7 +136,10 @@ export default function GameDetails({ data }) {
           <GameDataTitle>Manuel</GameDataTitle>
           <GameDataInfo>
           { game.manualURL ? (
-            <a href={game.manualURL}>Voir le manuel</a>
+            <ExternalLink href={game.manualURL} target="_blank">
+              Voir le manuel
+              <External />
+            </ExternalLink>
           ) : <NoManual>Nous ne possédons pas le manuel de ce jeu.</NoManual>}
           </GameDataInfo>
 
