@@ -1,0 +1,43 @@
+name: Node CI
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Install & build
+      run: |
+        yarn install
+        yarn build
+    - name: Upload public dir
+      uses: actions/upload-artifact@v1
+      with:
+        name: public
+        path: public
+      env:
+        CI: true
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Download public dir
+      uses: actions/download-artifact@v1
+      with:
+        name: public
+    - name: Upload to MU via FTP
+      uses: sebastianpopp/ftp-action@releases/v1
+      with:
+        host: ${{ secrets.FTP_SERVER }}
+        user: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        localDir: "public"
+        remoteDir: "httpdocs/minisite"
