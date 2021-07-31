@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [13.x]
+        node-version: [12.x]
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
@@ -14,8 +14,8 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - name: Install & build
       run: |
-        yarn install
-        yarn build
+        npm ci
+        npm run build
     - name: Upload public dir
       uses: actions/upload-artifact@v1
       with:
@@ -39,5 +39,5 @@ jobs:
         server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: "public"
-        server-dir: "httpdocs/minisite"
+        local-dir: "public/"
+        server-dir: "httpdocs/minisite/"
