@@ -125,7 +125,7 @@ export default function GameDetails({ data }) {
           <GameDataTitle>Manuel</GameDataTitle>
           <GameDataInfo>
           { game.manualURL ? (
-            "Oui"
+            <a href={game.manualURL}>Voir le manuel</a>
           ) : <NoManual>Nous ne possédons pas le manuel de ce jeu.</NoManual>}
           </GameDataInfo>
 
