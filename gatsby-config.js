@@ -1,10 +1,16 @@
-/**
- * Configure your Gatsby site with this file.
- *
- * See: https://www.gatsbyjs.com/docs/gatsby-config/
- */
-
 module.exports = {
-  /* Your site config here */
-  plugins: [],
+  plugins: [
+    'gatsby-plugin-styled-components',
+    'gatsby-plugin-react-helmet',
+    {
+      resolve: 'gatsby-source-graphql',
+      options: {
+        typeName: 'MU',
+        fieldName:'mu',
+        url: 'https://www.mariouniversalis.fr/graphql/',
+        //url: 'http://localhost:8080/mariouniversalis/graphql'
+      },
+    }
+  ],
+  pathPrefix: `/minisite`,
 }
