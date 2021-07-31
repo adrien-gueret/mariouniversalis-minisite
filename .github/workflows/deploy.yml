@@ -5,9 +5,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [13.x]
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
@@ -28,16 +28,16 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Download public dir
       uses: actions/download-artifact@v1
       with:
         name: public
     - name: Upload to MU via FTP
-      uses: sebastianpopp/ftp-action@releases/v1
+      uses: SamKirkland/FTP-Deploy-Action@4.1.0
       with:
-        host: ${{ secrets.FTP_SERVER }}
-        user: ${{ secrets.FTP_USERNAME }}
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        localDir: "public"
-        remoteDir: "httpdocs/minisite"
+        local-dir: "public"
+        server-dir: "httpdocs/minisite"
