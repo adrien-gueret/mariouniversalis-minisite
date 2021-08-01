@@ -37,12 +37,15 @@ const ImageContainer = styled.div`
 `;
 
 const Description = styled.p`
-  margin-top: ${({ theme }) => theme.spacing(3)};
+  margin-top: ${({ theme }) => theme.spacing(5)};
+  margin-bottom: ${({ theme }) => theme.spacing(5)};
   margin-left: auto;
   margin-right: auto;
   text-align: left;
+  border-left: 10px solid;
+  padding-left: ${({ theme }) => theme.spacing(2)};
 
-  ${({ theme }) => theme.typography.variants.body1}
+  ${({ theme }) => theme.typography.variants.body2}
 
   width: 100%;
 
@@ -55,15 +58,39 @@ const GameDataList = styled.dl`
   text-align: left;
 `;
 
+const MainGameDataList = styled(GameDataList)`
+  background: ${({ theme }) => theme.palette.background.secondary};
+  padding: ${({ theme }) => theme.spacing(2)};
+  display: inline-block;
+  border-radius: 8px;
+`;
+
 const GameDataTitle = styled.dt`
   ${({ theme }) => theme.typography.variants.subtitle}
+  margin-top: ${({ theme }) => theme.spacing(2)};
+  margin-bottom: ${({ theme }) => theme.spacing(1)};
+`;
+
+const ReleaseDateFlag = styled(GameDataTitle)`
+  margin: 0; 
+  top: ${({ theme }) => theme.spacing(1.5)};
+  position: relative;
+`;
+
+const DeviceLogo = styled.img`
+  vertical-align: top;
 `;
 
 const GameDataInfo = styled.dd`
   ${({ theme }) => theme.typography.variants.body1}
 `;
 
-const NoManual = styled.span`
+const ReleaseDateInfo = styled(GameDataInfo)`
+  top: -${({ theme }) => theme.spacing(1.5)};
+  position: relative;
+`;
+
+const Caption = styled.span`
   ${({ theme }) => theme.typography.variants.caption}
   color: ${({ theme }) => theme.palette.text.light};
 `;
@@ -80,8 +107,6 @@ const ExternalLink = styled.a`
 
 export default function GameDetails({ data }) {
   const { game } = data.mu;
-
-  console.log(game);
   
   return (
     <MainLayout>
@@ -107,27 +132,37 @@ export default function GameDetails({ data }) {
           { game.description }
         </Description>
 
-        <GameDataList>
+        <MainGameDataList>
           <GameDataTitle>Appareil</GameDataTitle>
-          <GameDataInfo>{ game.device.name }</GameDataInfo>
+          <GameDataInfo>
+            <DeviceLogo
+              src={game.device.logo}
+              alt={`${game.device.name}`}
+            />    
+
+            { ' ' }
+
+            <Caption>({ game.device.name })</Caption>   
+          </GameDataInfo>
 
           <GameDataTitle>Dates de sortie</GameDataTitle>
+
           <GameDataInfo>
             <GameDataList>
               { ['eur', 'usa', 'jap'].map((region) => (
                 <React.Fragment key={region}>
-                  <GameDataTitle>
+                  <ReleaseDateFlag>
                     <img
                       src={FLAGS[region]}
                       alt={FLAGS_ALTS[region]}
                       title={FLAGS_ALTS[region]}
                     />
-                  </GameDataTitle>
-                  <GameDataInfo>
+                  </ReleaseDateFlag>
+                  <ReleaseDateInfo>
                     { game.releaseDate[region] }
                     { ' ' }
-                    ( { game.age[region] } ans )
-                  </GameDataInfo>
+                    ({ game.age[region] } ans)
+                  </ReleaseDateInfo>
                 </React.Fragment>
               )) }
             </GameDataList>
@@ -137,14 +172,12 @@ export default function GameDetails({ data }) {
           <GameDataInfo>
           { game.manualURL ? (
             <ExternalLink href={game.manualURL} target="_blank">
-              Voir le manuel
+              Voir le manuel de "{ game.name }"
               <External />
             </ExternalLink>
-          ) : <NoManual>Nous ne possédons pas le manuel de ce jeu.</NoManual>}
+          ) : <Caption>Nous ne possédons pas le manuel de ce jeu.</Caption>}
           </GameDataInfo>
-
-          
-        </GameDataList>
+        </MainGameDataList>
       </CenteredBlock>
     </MainLayout>
   );
