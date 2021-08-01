@@ -1,11 +1,12 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { graphql } from 'gatsby';
+import { graphql, Link } from 'gatsby';
 import styled from 'styled-components';
 
+import ChevronLeft from '../modules/icons/ChevronLeft';
 import External from '../modules/icons/External';
 import MainLayout from '../modules/layouts/MainLayout';
-import { Block, Image } from '../modules/ui';
+import { Block, Button, Image } from '../modules/ui';
 
 import flagEUR from './images/eur.png';
 import flagUSA from './images/usa.png';
@@ -105,6 +106,22 @@ const ExternalLink = styled.a`
   }
 `;
 
+const Footer = styled.footer`
+  display: flex;
+  justify-content: space-between;
+  margin-top: ${({ theme }) => theme.spacing(4)};
+`;
+
+const YearLabel = styled.span`
+  display: none;
+
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    display: inline;
+  }
+`;
+
+const PrevYearButton = styled(Button)`margin-right: auto;`;
+
 export default function GameDetails({ data }) {
   const { game } = data.mu;
   
@@ -178,6 +195,14 @@ export default function GameDetails({ data }) {
           ) : <Caption>Nous ne possédons pas le manuel de ce jeu.</Caption>}
           </GameDataInfo>
         </MainGameDataList>
+
+        <Footer>
+          <PrevYearButton $primary as={Link} to={`/jeux-de-${game.releaseYear}`}>
+            <ChevronLeft />
+            <span><YearLabel>Voir les autres jeux sortis en </YearLabel>{game.releaseYear}</span>
+          </PrevYearButton>
+        </Footer>
+
       </CenteredBlock>
     </MainLayout>
   );
@@ -193,6 +218,7 @@ export const query = graphql`
         image
         imagePreview: image(hq: false)
         releaseDate: release_date(region: all, format: "DD/MM/YYYY")
+        releaseYear: release_date(region: eur, format: "YYYY")
         age(region: all)
         manualURL
         popularity
