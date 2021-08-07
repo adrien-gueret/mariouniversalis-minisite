@@ -80,6 +80,7 @@ const ReleaseDateFlag = styled(GameDataTitle)`
 
 const DeviceLogo = styled.img`
   vertical-align: top;
+  margin-right: ${({ theme }) => theme.spacing(1)};
 `;
 
 const GameDataInfo = styled.dd`
@@ -124,7 +125,7 @@ const PrevYearButton = styled(Button)`margin-right: auto;`;
 
 export default function GameDetails({ data }) {
   const { game } = data.mu;
-  
+
   return (
     <MainLayout>
       <Helmet>
@@ -155,9 +156,7 @@ export default function GameDetails({ data }) {
             <DeviceLogo
               src={game.device.logo}
               alt={`${game.device.name}`}
-            />    
-
-            { ' ' }
+            />
 
             <Caption>({ game.device.name })</Caption>   
           </GameDataInfo>
@@ -166,22 +165,51 @@ export default function GameDetails({ data }) {
 
           <GameDataInfo>
             <GameDataList>
-              { ['eur', 'usa', 'jap'].map((region) => (
-                <React.Fragment key={region}>
-                  <ReleaseDateFlag>
-                    <img
-                      src={FLAGS[region]}
-                      alt={FLAGS_ALTS[region]}
-                      title={FLAGS_ALTS[region]}
-                    />
-                  </ReleaseDateFlag>
-                  <ReleaseDateInfo>
-                    { game.releaseDate[region] }
-                    { ' ' }
-                    ({ game.age[region] } ans)
-                  </ReleaseDateInfo>
-                </React.Fragment>
-              )) }
+              { ['eur', 'usa', 'jap'].map((region) => {
+                const releaseDate = game.releaseDate[region];
+                const hasReleaseData = Boolean(releaseDate);
+
+                if (!hasReleaseData) {
+                  return null;
+                }
+
+                const age = game.age[region];
+                const isReleased = game.isReleased[region];
+                
+                let ageLabel = '';
+
+                if (isReleased) {
+                  ageLabel = age === 0
+                              ? ' (il y a moins d\'un an)'
+                              : ` (${age} an${age > 1 ? 's': ''})`;
+                } else {
+                  const daysBeforeAnniversary = game.daysBeforeAnniversary[region];
+                  const isPlanned = daysBeforeAnniversary !== null;
+                  const isBlurryDate = releaseDate.indexOf('?') >= 0;
+
+                  const blurryLabel = isBlurryDate ? ' au moins' : '';
+
+                  ageLabel = isPlanned
+                              ? ` (dans${blurryLabel} ${daysBeforeAnniversary} jour${daysBeforeAnniversary > 1 ? 's': ''})`
+                              : '';
+                }
+
+                return (
+                  <React.Fragment key={region}>
+                    <ReleaseDateFlag>
+                      <img
+                        src={FLAGS[region]}
+                        alt={FLAGS_ALTS[region]}
+                        title={FLAGS_ALTS[region]}
+                      />
+                    </ReleaseDateFlag>
+                    <ReleaseDateInfo>
+                      { game.releaseDate[region] }
+                      { ageLabel && <Caption>{ ageLabel }</Caption> }
+                    </ReleaseDateInfo>
+                  </React.Fragment>
+                );
+              }) }
             </GameDataList>
           </GameDataInfo>
 
@@ -197,10 +225,12 @@ export default function GameDetails({ data }) {
         </MainGameDataList>
 
         <Footer>
-          <PrevYearButton $primary as={Link} to={`/jeux-de-${game.releaseYear}`}>
-            <ChevronLeft />
-            <span><YearLabel>Voir les autres jeux sortis en </YearLabel>{game.releaseYear}</span>
-          </PrevYearButton>
+          { game.releaseYear && (
+            <PrevYearButton $primary as={Link} to={`/jeux-de-${game.releaseYear}`}>
+              <ChevronLeft />
+              <span><YearLabel>Voir les autres jeux sortis en </YearLabel>{game.releaseYear}</span>
+            </PrevYearButton>
+          )}
         </Footer>
 
       </CenteredBlock>
@@ -219,6 +249,8 @@ export const query = graphql`
         imagePreview: image(hq: false)
         releaseDate: release_date(region: all, format: "DD/MM/YYYY")
         releaseYear: release_date(region: eur, format: "YYYY")
+        isReleased: is_released(region: all)
+        daysBeforeAnniversary: days_before_anniversary
         age(region: all)
         manualURL
         popularity
