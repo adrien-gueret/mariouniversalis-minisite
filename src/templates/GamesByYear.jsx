@@ -145,7 +145,7 @@ export default function GamesByYear({ data, pageContext }) {
                     isReleased={!unreleasedGameIds.includes(game.id)}
                     style={{
                       opacity: (isInit || index === 0) ? 1 : 0,
-                      transitionDelay: `${index * 50}ms`,
+                      transitionDelay: `${(index - 1) * 50}ms`,
                     }}
                   >
                     { game.description }

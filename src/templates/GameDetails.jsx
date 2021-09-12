@@ -161,6 +161,13 @@ export default function GameDetails({ data }) {
             <Caption>({ game.device.name })</Caption>   
           </GameDataInfo>
 
+          { /*game.popularity && (
+            <>
+              <GameDataTitle>Note moyenne (moyenne bayésienne)</GameDataTitle>
+              <GameDataInfo>{ game.popularity }</GameDataInfo>
+            </>
+          ) */}
+
           <GameDataTitle>Dates de sortie</GameDataTitle>
 
           <GameDataInfo>
@@ -173,15 +180,18 @@ export default function GameDetails({ data }) {
                   return null;
                 }
 
-                const age = game.age[region];
+                const ageInYears = game.age[region];
+                const ageInDays = game.ageInDays[region];
                 const isReleased = game.isReleased[region];
                 
                 let ageLabel = '';
 
                 if (isReleased) {
-                  ageLabel = age === 0
-                              ? ' (il y a moins d\'un an)'
-                              : ` (${age} an${age > 1 ? 's': ''})`;
+                  if (ageInYears === 0) {
+                    ageLabel = ` (${['Aujourd\'hui !', 'Hier !', 'Avant-hier !'][ageInDays] || `il y a ${ageInDays} jours`})`;
+                  } else {
+                    ageLabel = ` (${ageInYears} an${ageInYears > 1 ? 's': ''})`
+                  }
                 } else {
                   const daysBeforeAnniversary = game.daysBeforeAnniversary[region];
                   const isPlanned = daysBeforeAnniversary !== null;
@@ -189,9 +199,9 @@ export default function GameDetails({ data }) {
 
                   const blurryLabel = isBlurryDate ? ' au moins' : '';
 
-                  ageLabel = isPlanned
-                              ? ` (dans${blurryLabel} ${daysBeforeAnniversary} jour${daysBeforeAnniversary > 1 ? 's': ''})`
-                              : '';
+                  if (isPlanned) {
+                    ageLabel = ` (${['Aujourd\'hui !', 'Demain !', 'Après-demain !'][daysBeforeAnniversary] || `dans${blurryLabel} ${daysBeforeAnniversary} jour${daysBeforeAnniversary > 1 ? 's': ''}`})`;
+                  }
                 }
 
                 return (
@@ -252,6 +262,7 @@ export const query = graphql`
         isReleased: is_released(region: all)
         daysBeforeAnniversary: days_before_anniversary
         age(region: all)
+        ageInDays: age(unit: days, region: all)
         manualURL
         popularity
         device {
