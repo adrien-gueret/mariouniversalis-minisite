@@ -46,4 +46,3 @@ jobs:
         password: ${{ secrets.FTP_PASSWORD }}
         local-dir: "public/"
         server-dir: "httpdocs/minisite/"
-        dangerous-clean-slate: true
