@@ -2,9 +2,8 @@ import React from 'react';
 import { Link } from 'gatsby';
 import styled from 'styled-components';
 
-import Info from '../../icons/Info';
 import useBreakpoint from '../../ui/hooks/useBreakpoint';
-import { Image } from '../../ui';
+import { Image, InfoTooltip } from '../../ui';
 
 const Article = styled.article`
     display: flex;
@@ -60,9 +59,8 @@ const ReleaseDate = styled.p`
     color: ${({ theme }) => theme.palette.text.light};
 `;
 
-const InfoIconContainer = styled.span`
+const InfoIconContainer = styled(InfoTooltip)`
     margin-left: ${({ theme }) => theme.spacing(.5)};
-    cursor: help;
 `;
 
 const Root = styled(Link)`
@@ -123,9 +121,7 @@ export default function GameCard({
                     
                     <ReleaseDate>
                         { !isReleased && 'Prévu le'} { releaseDate }
-                        <InfoIconContainer title="Sortie européenne">
-                            <Info width={16} />
-                        </InfoIconContainer>
+                        <InfoIconContainer title="Sortie européenne"/>
                     </ReleaseDate>
 
                     <Footer>

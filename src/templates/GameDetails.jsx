@@ -6,11 +6,12 @@ import styled from 'styled-components';
 import ChevronLeft from '../modules/icons/ChevronLeft';
 import External from '../modules/icons/External';
 import MainLayout from '../modules/layouts/MainLayout';
-import { Block, Button, Image } from '../modules/ui';
+import { Block, Button, Image, InfoTooltip } from '../modules/ui';
 
 import flagEUR from './images/eur.png';
 import flagUSA from './images/usa.png';
 import flagJAP from './images/jap.png';
+import warioSign from './images/wario_sign.png';
 
 const FLAGS = {
   eur: flagEUR,
@@ -87,6 +88,25 @@ const GameDataInfo = styled.dd`
   ${({ theme }) => theme.typography.variants.body1}
 `;
 
+const PopularityInfo = styled(GameDataInfo)`
+  background-image: url(${warioSign});
+  height: 75px;
+  width: 100px;
+  position: relative;
+`;
+
+const PopularityValue = styled.span`
+  color: ${({ theme }) => theme.palette.text.contrasted};
+  position: absolute;
+  right: 3px;
+  top: 7px;
+  display: block;
+  width: 54px;
+  text-align: center;
+  font-weight: bold;
+  transform: rotate(19deg);
+`;
+
 const ReleaseDateInfo = styled(GameDataInfo)`
   top: -${({ theme }) => theme.spacing(1.5)};
   position: relative;
@@ -122,6 +142,11 @@ const YearLabel = styled.span`
 `;
 
 const PrevYearButton = styled(Button)`margin-right: auto;`;
+
+const InfoTooltipContainer = styled(InfoTooltip)`
+  margin-left: ${({ theme }) => theme.spacing(.5)};
+  vertical-align: bottom;
+`;
 
 export default function GameDetails({ data }) {
   const { game } = data.mu;
@@ -161,12 +186,15 @@ export default function GameDetails({ data }) {
             <Caption>({ game.device.name })</Caption>   
           </GameDataInfo>
 
-          { /*game.popularity && (
+          { game.popularity && (
             <>
-              <GameDataTitle>Note moyenne (moyenne bayésienne)</GameDataTitle>
-              <GameDataInfo>{ game.popularity }</GameDataInfo>
+              <GameDataTitle>
+                Popularité
+                <InfoTooltipContainer title="Note moyenne bayésienne" />
+              </GameDataTitle>
+              <PopularityInfo><PopularityValue>{ Math.round(game.popularity * 10) / 10 }</PopularityValue></PopularityInfo>
             </>
-          ) */}
+          ) }
 
           <GameDataTitle>Dates de sortie</GameDataTitle>
 
