@@ -216,7 +216,7 @@ export default function GameDetails({ data }) {
 
                 if (isReleased) {
                   if (ageInYears === 0) {
-                    ageLabel = ` (${['Aujourd\'hui !', 'Hier !', 'Avant-hier !'][ageInDays] || `il y a ${ageInDays} jours`})`;
+                    ageLabel = ` (${['Aujourd\'hui !', 'Hier', 'Avant-hier'][ageInDays] || `il y a ${ageInDays} jours`})`;
                   } else {
                     ageLabel = ` (${ageInYears} an${ageInYears > 1 ? 's': ''})`
                   }
