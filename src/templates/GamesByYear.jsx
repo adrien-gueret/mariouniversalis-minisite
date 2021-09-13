@@ -54,6 +54,7 @@ const GridGameItem = styled(GameCard)`
 const YearNavigation = styled.nav`
   display: flex;
   justify-content: space-between;
+  margin-top:  ${({ theme }) => theme.spacing(4)};
 `;
 
 const YearLabel = styled.span`
@@ -66,6 +67,7 @@ const YearLabel = styled.span`
 
 const PrevYearButton = styled(Button)`margin-right: auto;`;
 const NextYearButton = styled(Button)`margin-left: auto;`;
+const SelectYearButton = styled(Button)`margin: auto;`;
 
 export default function GamesByYear({ data, pageContext }) {
   const [isInit, setIsInit] = useState(false);
@@ -83,6 +85,9 @@ export default function GamesByYear({ data, pageContext }) {
   const totalReleasedGames = totalGames - totalUnreleasedGames;
 
   const { setTheme } = useContext(ThemeContext);
+
+  const isFirstYear = pageContext.year <= pageContext.firstYearWithGames;
+  const isLastYear = pageContext.year >= pageContext.lastYearWithGames;
 
   useLayoutEffect(() => {
     setIsInit(true);
@@ -163,19 +168,31 @@ export default function GamesByYear({ data, pageContext }) {
         )}
 
         <YearNavigation>
-          { pageContext.year > pageContext.firstYearWithGames && (
-            <PrevYearButton $primary as={Link} to={`/jeux-de-${pageContext.year - 1}`}>
-              <ChevronLeft />
-              <span><YearLabel>Année </YearLabel>{pageContext.year - 1}</span>
-            </PrevYearButton>
-          )}
+          <PrevYearButton
+            style={{ visibility: isFirstYear ? 'hidden' : 'visible' }}
+            $primary
+            as={isFirstYear ? 'span' : Link}
+            to={isFirstYear ? void 0 : `/jeux-de-${pageContext.year - 1}`}
+          >
+            <ChevronLeft />
+            <span><YearLabel>Année </YearLabel>{pageContext.year - 1}</span>
+          </PrevYearButton>
+
+          <SelectYearButton as={Link} to="/selectionner-annee">
+            <span>Autre <YearLabel>année</YearLabel></span>
+          </SelectYearButton>
           
-          { pageContext.year < pageContext.lastYearWithGames && (
-            <NextYearButton $primary as={Link} to={`/jeux-de-${pageContext.year + 1}`}>
+         
+            <NextYearButton
+              style={{ visibility: isLastYear ? 'hidden' : 'visible' }}
+              $primary
+              as={isLastYear ? 'span' : Link}
+              to={isLastYear ? void 0 : `/jeux-de-${pageContext.year + 1}`}
+            >
               <span><YearLabel>Année </YearLabel>{pageContext.year + 1}</span>
               <ChevronRight />
             </NextYearButton>
-          )}
+         
         </YearNavigation>
             
       </CenteredBlock>

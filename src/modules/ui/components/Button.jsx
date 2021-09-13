@@ -23,7 +23,6 @@ const Button = styled.button`
             border-color: ${({ theme }) => theme.palette.line};
             color: ${({ theme }) => theme.palette.text.default};
             background-color: ${({ theme }) => theme.palette.background.secondary};
-            
             & > svg:first-child {
                 transform: translateX(${({ theme }) => theme.spacing(-0.5)});
             }
