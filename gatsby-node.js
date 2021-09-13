@@ -3,11 +3,18 @@ const path = require(`path`);
 exports.createPages = async ({ actions, graphql }) => {
     const { createPage } = actions;
 
-    // Games by year
-    const currentYear = new Date().getFullYear();
-    const firstYearWithGames = 1986;
-    const lastYearWithGames = currentYear + 1;
-    const activeYears = [...Array(lastYearWithGames - firstYearWithGames + 1).keys()].map(x => x + firstYearWithGames);
+    const { data: siteData } = await graphql(`
+    query {
+        site {
+            siteMetadata {
+                activeYears
+            }
+        }
+    }`);
+
+    const { activeYears } = siteData.site.siteMetadata;
+    const [firstYearWithGames] = activeYears;
+    const lastYearWithGames = activeYears[activeYears.length - 1];
 
     activeYears.forEach((year) => {
         createPage({

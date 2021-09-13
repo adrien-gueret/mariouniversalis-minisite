@@ -48,7 +48,7 @@ export default function Home() {
         actions={(
           <>
             <Button $primary as={Link} to={`/jeux-de-${currentYear}`}>Voir les jeux de cette année</Button>
-            <Button disabled tabIndex={-1}>Faire une autre recherche</Button>
+            <Button as={Link} to="/selectionner-annee">Sélectionner une autre année</Button>
           </>
         )}
       >

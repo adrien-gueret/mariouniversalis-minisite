@@ -190,7 +190,7 @@ export default function GameDetails({ data }) {
             <>
               <GameDataTitle>
                 Popularité
-                <InfoTooltipContainer title="Note moyenne bayésienne" />
+                <InfoTooltipContainer title="Note moyenne bayésienne sur 20" />
               </GameDataTitle>
               <PopularityInfo><PopularityValue>{ Math.round(game.popularity * 10) / 10 }</PopularityValue></PopularityInfo>
             </>
