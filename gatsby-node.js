@@ -1,5 +1,46 @@
 const path = require(`path`);
 
+const getGames = (() => {
+    let games = [];
+
+    return async (graphql) => {
+        if (games.length) {
+            return games;
+        }
+
+        let page = 0;
+        let hasNextPage = false;
+
+        do {
+            page++;
+
+            const { data } = await graphql(`
+            query {
+                mu {
+                    games(per_page: 30, page: ${page}) {
+                        pagination {
+                            has_next_page
+                        }
+                        data {
+                            id
+                            slug(withId: true)
+                            name
+                            device {
+                                name
+                            }
+                        }
+                    }  
+                }
+            }`);
+    
+            hasNextPage = data.mu.games.pagination.has_next_page;
+            games = games.concat(data.mu.games.data);
+        } while (hasNextPage);
+
+        return games;
+    }
+})();
+
 exports.createPages = async ({ actions, graphql }) => {
     const { createPage } = actions;
 
@@ -28,38 +69,13 @@ exports.createPages = async ({ actions, graphql }) => {
         });
     });
 
-    // Game details
-    let page = 0;
-    let hasNextPage = false;
-    let games = [];
+    const games = await getGames(graphql);
 
-    do {
-        page++;
-        
-        const { data } = await graphql(`
-        query {
-            mu {
-                games(per_page: 30, page: ${page}) {
-                    pagination {
-                        has_next_page
-                    }
-                    data {
-                        id
-                        slug(withId: true)
-                    }
-                }  
-            }
-        }`);
-
-        hasNextPage = data.mu.games.pagination.has_next_page;
-        games = games.concat(data.mu.games.data);
-    } while (hasNextPage);
-
-    games.forEach(({ id, slug }) => {
+    Promise.all(games.map(async ({ id, slug }) => {
         createPage({
             path: slug,
             component: path.resolve(`./src/templates/GameDetails.jsx`),
             context: { id },
         });
-    });
-  }
+    }));
+}

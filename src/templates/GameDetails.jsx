@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet';
 import { graphql, Link } from 'gatsby';
 import styled from 'styled-components';
 
+import VideoCard from '../modules/games/components/VideoCard';
 import ChevronLeft from '../modules/icons/ChevronLeft';
 import External from '../modules/icons/External';
 import MainLayout from '../modules/layouts/MainLayout';
@@ -148,8 +149,22 @@ const InfoTooltipContainer = styled(InfoTooltip)`
   vertical-align: bottom;
 `;
 
+const VideoContainer = styled.section`
+  text-align: left;
+`;
+
+const Grid = styled.ul`
+  display: grid;
+  list-style: none;
+  justify-content: center;
+  grid-template-columns: repeat(auto-fill, 480px);
+  grid-gap: ${({ theme }) => theme.spacing(3)};
+  margin: ${({ theme }) => theme.spacing(6, 0)};
+`;
+
 export default function GameDetails({ data }) {
   const { game } = data.mu;
+  const { videos } = game;
 
   return (
     <MainLayout>
@@ -262,6 +277,29 @@ export default function GameDetails({ data }) {
           </GameDataInfo>
         </MainGameDataList>
 
+        { Boolean(videos.data.length) && (
+          <VideoContainer>
+            <h2>Vidéo{videos.data.length > 1 ? 's' : ''} autour de ce jeu</h2>
+
+            <Grid>
+              { videos.data.map(({ id, title, thumbnailPreview, thumbnail, channel }) => (
+                <li key={id}>
+                  <VideoCard
+                    title={title}
+                    thumbnail={thumbnail.url}
+                    thumbnailWidth={thumbnail.width}
+                    thumbnailHeight={thumbnail.height}
+                    thumbnailPreview={thumbnailPreview.url}
+                    channel={channel.title}
+                    videoId={id}
+                  />
+                </li>
+              )) }
+            </Grid>
+          </VideoContainer>
+        )}
+        
+
         <Footer>
           { game.releaseYear && (
             <PrevYearButton $primary as={Link} to={`/jeux-de-${game.releaseYear}`}>
@@ -293,6 +331,23 @@ export const query = graphql`
         ageInDays: age(unit: days, region: all)
         manualURL
         popularity
+        videos {
+          data {
+            id
+            title
+            channel {
+              title
+            }
+            thumbnailPreview: thumbnail(hq: false) {
+              url
+            }
+            thumbnail(hq: true) {
+              url
+              width
+              height
+            }
+          }
+        }
         device {
           name
           logo

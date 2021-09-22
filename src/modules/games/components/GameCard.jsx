@@ -79,12 +79,6 @@ const Root = styled(Link)`
     }
 `;
 
-const Footer = styled.footer`
-    margin-top: auto;
-    text-align: right;
-`;
-
-
 export default function GameCard({
     name,
     slug,
@@ -123,10 +117,6 @@ export default function GameCard({
                         { !isReleased && 'Prévu le'} { releaseDate }
                         <InfoIconContainer title="Sortie européenne"/>
                     </ReleaseDate>
-
-                    <Footer>
-                        
-                    </Footer>
                 </Content>
             </Article>
         </Root>

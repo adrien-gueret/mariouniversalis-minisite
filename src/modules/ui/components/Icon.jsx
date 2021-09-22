@@ -14,7 +14,7 @@ export default function Icon({ width = 24, height = width, ...otherProps }) {
         <Svg
             $width={width}
             $height={height}
-            viewBox="0 0 24 24"
+            viewBox={`0 0 ${width} ${height}`}
             {...otherProps}
         />
     );
