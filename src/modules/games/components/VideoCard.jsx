@@ -100,7 +100,7 @@ export default function VideoCard({
                     src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`}
                     title={title}
                     frameBorder="0"
-                    allow="fullscreen"
+                    allow="autoplay fullscreen"
                     allowFullScreen
                 />
             )}            
