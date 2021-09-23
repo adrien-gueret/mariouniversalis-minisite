@@ -282,14 +282,12 @@ export default function GameDetails({ data }) {
             <h2>Vidéo{videos.data.length > 1 ? 's' : ''} autour de ce jeu</h2>
 
             <Grid>
-              { videos.data.map(({ id, title, thumbnailPreview, thumbnail, channel }) => (
+              { videos.data.map(({ id, title, thumbnail, channel }) => (
                 <li key={id}>
                   <VideoCard
                     title={title}
-                    thumbnail={thumbnail.url}
                     thumbnailWidth={thumbnail.width}
                     thumbnailHeight={thumbnail.height}
-                    thumbnailPreview={thumbnailPreview.url}
                     channel={channel.title}
                     videoId={id}
                   />
@@ -338,11 +336,7 @@ export const query = graphql`
             channel {
               title
             }
-            thumbnailPreview: thumbnail(hq: false) {
-              url
-            }
-            thumbnail(hq: true) {
-              url
+            thumbnail {
               width
               height
             }

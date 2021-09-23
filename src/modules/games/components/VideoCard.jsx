@@ -1,8 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-
-import { Image } from '../../ui';
-import Play from '../../icons/Play';
 
 const Root = styled.div`
     display: flex;
@@ -43,67 +40,26 @@ const ChannelName = styled.p`
     color: ${({ theme }) => theme.palette.text.light};
 `;
 
-const PlayButton = styled.button`
-    background: transparent;
-    border: none;
-    padding: 0;
-    margin: 0;
-    top: 0;
-    left: 0;
-    align-self: center;
-    position: absolute;
-    z-index: 1;
-    cursor: pointer;
-    color: rgba(0,0,0,.7);
-    transition: all 300ms;
-
-    &:hover,&:focus {
-        color: red;
-        background-color: rgba(0,0,0,.5);
-    }
-`;
 
 export default function VideoCard({
     title,
-    thumbnail,
     thumbnailWidth,
     thumbnailHeight,
-    thumbnailPreview,
     channel,
     videoId,
     ...otherProps
 }) {
-    const [isVideoPlaying, setIsVideoPlaying] = useState(false);
     return (
         <Root {...otherProps}>
-            { !isVideoPlaying ? (
-                <>
-                    <PlayButton
-                        onClick={() => setIsVideoPlaying(true)}
-                        style={{ width: thumbnailWidth, height: thumbnailHeight }}
-                        aria-label={`Lancer la vidéo "${title}", de la chaine YouTube "${channel}"`}
-                    >
-                        <Play />
-                    </PlayButton>
-                    <Image
-                        src={thumbnail}
-                        previewSrc={thumbnailPreview}
-                        alt={title}
-                        width={thumbnailWidth}
-                        height={thumbnailHeight}
-                    />
-                </>    
-            ) : (
-                <iframe
-                    width={thumbnailWidth}
-                    height={thumbnailHeight}
-                    src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`}
-                    title={title}
-                    frameBorder="0"
-                    allow="autoplay fullscreen"
-                    allowFullScreen
-                />
-            )}            
+            <iframe
+                width={thumbnailWidth}
+                height={thumbnailHeight}
+                src={`https://www.youtube.com/embed/${videoId}?modestbranding=1&rel=0&showinfo=0`}
+                title={title}
+                frameBorder="0"
+                allow="fullscreen"
+                allowFullScreen
+            />           
 
             <Content>
                 <Header>
