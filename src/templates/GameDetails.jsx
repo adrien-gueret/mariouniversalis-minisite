@@ -154,12 +154,20 @@ const VideoContainer = styled.section`
 `;
 
 const Grid = styled.ul`
-  display: grid;
+  
   list-style: none;
   justify-content: center;
-  grid-template-columns: repeat(auto-fill, 480px);
-  grid-gap: ${({ theme }) => theme.spacing(3)};
   margin: ${({ theme }) => theme.spacing(6, 0)};
+
+  &>li {
+    margin-bottom: ${({ theme }) => theme.spacing(3)};
+  }
+
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 480px);
+    grid-gap: ${({ theme }) => theme.spacing(3)};
+  }
 `;
 
 export default function GameDetails({ data }) {

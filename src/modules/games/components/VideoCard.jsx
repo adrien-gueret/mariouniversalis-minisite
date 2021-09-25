@@ -40,6 +40,13 @@ const ChannelName = styled.p`
     color: ${({ theme }) => theme.palette.text.light};
 `;
 
+const YouTubeIframe = styled.iframe`
+    width: 100%;
+
+    ${({ theme }) => theme.breakpoints.only('xs')} {
+        height: auto;
+    }
+`;
 
 export default function VideoCard({
     title,
@@ -51,7 +58,7 @@ export default function VideoCard({
 }) {
     return (
         <Root {...otherProps}>
-            <iframe
+            <YouTubeIframe
                 width={thumbnailWidth}
                 height={thumbnailHeight}
                 src={`https://www.youtube.com/embed/${videoId}?modestbranding=1&rel=0&showinfo=0`}
