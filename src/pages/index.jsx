@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet';
 import { Link } from 'gatsby';
 import styled, { keyframes } from 'styled-components';
 
-import MainLayout from '../modules/layouts/MainLayout';
+import HomenLayout from '../modules/layouts/HomeLayout';
 import { Block, Button } from '../modules/ui';
 
 import superMarioLogo from './images/super_mario.svg';
@@ -37,7 +37,7 @@ export default function Home() {
   const currentYear = new Date().getFullYear();
   
   return (
-    <MainLayout>
+    <HomenLayout>
       <Helmet>
         <title>{ `Mini-site des jeux Super Mario - Mario Universalis` }</title>
         <meta name="description" content="Découvrez une liste presque complète des jeux Super Mario sortis en Europe avec, pour chacun de ces jeux, sa boite, une description et d'autres informations comme le manuel d'utilisation !" />
@@ -61,6 +61,6 @@ export default function Home() {
           Quelle que soit votre expertise sur l'univers du plombier, vous découvrirez ou re-découvrirez sans doute un titre parmi tous ceux de notre base de données.
         </p>
       </CenteredBlock>
-    </MainLayout>
+    </HomenLayout>
   );
 }
