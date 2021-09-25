@@ -54,25 +54,29 @@ export default function VideoCard({
     thumbnailHeight,
     channel,
     videoId,
+    children,
     ...otherProps
 }) {
+    const embedUrl = `https://www.youtube.com/embed/${videoId}?modestbranding=1&rel=0&showinfo=0`;
     return (
         <Root {...otherProps}>
             <YouTubeIframe
                 width={thumbnailWidth}
                 height={thumbnailHeight}
-                src={`https://www.youtube.com/embed/${videoId}?modestbranding=1&rel=0&showinfo=0`}
+                src={embedUrl}
                 title={title}
                 frameBorder="0"
                 allow="fullscreen"
                 allowFullScreen
-            />           
+            />      
 
             <Content>
                 <Header>
-                    <Title>{ title }</Title>
+                    <Title itemProp="name">{ title }</Title>
                 </Header>
-                <ChannelName>{ channel }</ChannelName>
+                <ChannelName itemProp="author">{ channel }</ChannelName>
+                { children }
+                <meta itemProp="embedUrl" content={embedUrl} />
             </Content>
         </Root>
     );

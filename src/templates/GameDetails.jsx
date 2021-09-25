@@ -183,6 +183,11 @@ export default function GameDetails({ data }) {
       <CenteredBlock
         title={game.name}
         titleComponent="h1"
+        itemScope
+        itemType="https://schema.org/VideoGame"
+        titleProps={{
+          itemProp: 'name',
+        }}
       >
         <ImageContainer>
           <Image
@@ -194,7 +199,7 @@ export default function GameDetails({ data }) {
           />
         </ImageContainer>
     
-        <Description>
+        <Description itemProp="description">
           { game.description }
         </Description>
 
@@ -206,7 +211,7 @@ export default function GameDetails({ data }) {
               alt={`${game.device.name}`}
             />
 
-            <Caption>({ game.device.name })</Caption>   
+            <Caption>(<span itemProp="gamePlatform">{ game.device.name }</span>)</Caption>   
           </GameDataInfo>
 
           { game.popularity && (
@@ -215,7 +220,14 @@ export default function GameDetails({ data }) {
                 Popularité
                 <InfoTooltipContainer title="Note moyenne bayésienne sur 20" />
               </GameDataTitle>
-              <PopularityInfo><PopularityValue>{ Math.round(game.popularity * 10) / 10 }</PopularityValue></PopularityInfo>
+              <PopularityInfo
+                itemScope
+                itemType="https://schema.org/AggregateRating"
+                itemProp="aggregateRating"
+              >
+                <PopularityValue itemProp="ratingValue">{ Math.round(game.popularity * 10) / 10 }</PopularityValue>
+                <meta itemProp="bestRating" content="20" />
+              </PopularityInfo>
             </>
           ) }
 
@@ -298,7 +310,12 @@ export default function GameDetails({ data }) {
                     thumbnailHeight={thumbnail.height}
                     channel={channel.title}
                     videoId={id}
-                  />
+                    itemProp="associatedMedia"
+                    itemScope
+                    itemType="https://schema.org/VideoObject"
+                  >
+                    <meta itemProp="thumbnail" content={thumbnail.url} />
+                  </VideoCard>
                 </li>
               )) }
             </Grid>
@@ -347,6 +364,7 @@ export const query = graphql`
             thumbnail {
               width
               height
+              url
             }
           }
         }

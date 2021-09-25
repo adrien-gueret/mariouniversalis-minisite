@@ -70,11 +70,13 @@ function Block({
     actions = null,
     title = null,
     titleComponent: TitleComponent = 'h2',
+    titleProps = {},
+    ...otherProps
 }) {
     return (
-        <Root className={className}>
+        <Root className={className} {...otherProps}>
             <Dots />
-            { title && <Title as={TitleComponent}>{ title }</Title> }
+            { title && <Title as={TitleComponent} {...titleProps}>{ title }</Title> }
             <Content>{ children }</Content>
             { actions && <Actions>{ actions }</Actions> }
             <Dots />
