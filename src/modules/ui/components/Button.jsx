@@ -6,6 +6,7 @@ const Button = styled.button`
     padding: ${({ theme }) => theme.spacing(1, 1, 1.25, 1)};
     border-radius: 20px;
     border: 2px solid transparent;
+    flex-shrink: 0;
     
     cursor: pointer;
     text-decoration: none;

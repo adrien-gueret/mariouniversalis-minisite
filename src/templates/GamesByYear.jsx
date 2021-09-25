@@ -55,6 +55,12 @@ const YearNavigation = styled.nav`
   display: flex;
   justify-content: space-between;
   margin-top:  ${({ theme }) => theme.spacing(4)};
+  margin-bottom: 60px;
+  position: relative;
+
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    margin-bottom: 0;
+  }
 `;
 
 const YearLabel = styled.span`
@@ -67,7 +73,20 @@ const YearLabel = styled.span`
 
 const PrevYearButton = styled(Button)`margin-right: auto;`;
 const NextYearButton = styled(Button)`margin-left: auto;`;
-const SelectYearButton = styled(Button)`margin: auto;`;
+const SelectYearButton = styled(Button)`
+  margin: auto;
+  position: absolute;
+  top: 60px;
+  left:  ${({ theme }) => theme.spacing(8)};
+  right:  ${({ theme }) => theme.spacing(8)};
+
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    position: relative;
+    top: 0;
+    left: 0;
+    right: 0;
+  }
+`;
 
 export default function GamesByYear({ data, pageContext }) {
   const [isInit, setIsInit] = useState(false);
@@ -179,7 +198,7 @@ export default function GamesByYear({ data, pageContext }) {
           </PrevYearButton>
 
           <SelectYearButton as={Link} to="/selectionner-annee">
-            <span>Autre <YearLabel>année</YearLabel></span>
+            <span>Autre année</span>
           </SelectYearButton>
           
          
