@@ -54,7 +54,6 @@ export default function VideoCard({
     thumbnailHeight,
     channel,
     videoId,
-    children,
     ...otherProps
 }) {
     const embedUrl = `https://www.youtube.com/embed/${videoId}?modestbranding=1&rel=0&showinfo=0`;
@@ -75,8 +74,6 @@ export default function VideoCard({
                     <Title>{ title }</Title>
                 </Header>
                 <ChannelName>{ channel }</ChannelName>
-                { children }
-                <meta itemProp="embedUrl" content={embedUrl} />
             </Content>
         </Root>
     );

@@ -7,7 +7,7 @@ import VideoCard from '../modules/games/components/VideoCard';
 import ChevronLeft from '../modules/icons/ChevronLeft';
 import External from '../modules/icons/External';
 import MainLayout from '../modules/layouts/MainLayout';
-import { Block, Button, Image, InfoTooltip } from '../modules/ui';
+import { Block, Button, Image, InfoTooltip, ConfettiLuncher } from '../modules/ui';
 
 import flagEUR from './images/eur.png';
 import flagUSA from './images/usa.png';
@@ -237,6 +237,9 @@ export default function GameDetails({ data }) {
         <meta property="twitter:description" content={game.description} />
         <meta property="twitter:image" content={game.image} />
       </Helmet>
+      
+      <ConfettiLuncher />
+
       <CenteredBlock
         title={game.name}
         titleComponent="h1"
@@ -305,7 +308,7 @@ export default function GameDetails({ data }) {
 
                     const isAnniversaryToday = anniversaryDay === today.getDate() && anniversaryMonth === today.getMonth() + 1;
 
-                    ageLabel = ` (${ageInYears} an${ageInYears > 1 ? 's': ''}${isAnniversaryToday ? ' - Anniversaire aujour\'hui ! 🎉' : ''})`
+                    ageLabel = ` (${ageInYears} an${ageInYears > 1 ? 's': ''}${isAnniversaryToday ? ' - Anniversaire aujour\'hui ! 🎉' : ''})`;
                   }
                 } else {
                   const daysBeforeAnniversary = game.daysBeforeAnniversary[region];
