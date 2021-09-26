@@ -214,6 +214,53 @@ export default function GameDetails({ data }) {
   }
 
   const title = `${game.name} - Mario Universalis`;
+  let shouldRenderConfetti = false;
+
+  const ageLabels = ['eur', 'usa', 'jap'].map((region) => {
+    const releaseDate = game.releaseDate[region];
+    const hasReleaseData = Boolean(releaseDate);
+    
+    if (!hasReleaseData) {
+      return { region };
+    }
+
+    const ageInYears = game.age[region];
+    const ageInDays = game.ageInDays[region];
+    const isReleased = game.isReleased[region];
+    
+    let ageLabel = '';
+
+    if (isReleased) {
+      if (ageInYears === 0) {
+        ageLabel = ` (${['Aujourd\'hui !', 'Hier', 'Avant-hier'][ageInDays] || `il y a ${ageInDays} jours`})`;
+      } else {
+        const splittedReleaseDate = releaseDate.split('/');
+        const anniversaryDay = +splittedReleaseDate[0];
+        const anniversaryMonth = +splittedReleaseDate[1];
+        const today = new Date();
+
+        const isAnniversaryToday = anniversaryDay === today.getDate() && anniversaryMonth === today.getMonth() + 1;
+
+        shouldRenderConfetti = shouldRenderConfetti || isAnniversaryToday;
+
+        ageLabel = ` (${ageInYears} an${ageInYears > 1 ? 's': ''}${isAnniversaryToday ? ' - Anniversaire aujour\'hui ! 🎉' : ''})`;
+      }
+    } else {
+      const daysBeforeAnniversary = game.daysBeforeAnniversary[region];
+      const isPlanned = daysBeforeAnniversary !== null;
+      const isBlurryDate = releaseDate.indexOf('?') >= 0;
+
+      const blurryLabel = isBlurryDate ? ' au moins' : '';
+
+      if (isPlanned) {
+        ageLabel = ` (${['Aujourd\'hui !', 'Demain !', 'Après-demain !'][daysBeforeAnniversary] || `dans${blurryLabel} ${daysBeforeAnniversary} jour${daysBeforeAnniversary > 1 ? 's': ''}`})`;
+      }
+    }
+
+    return { region, ageLabel };
+  });
+
+  console.log(ageLabels);
 
   return (
     <MainLayout>
@@ -238,7 +285,7 @@ export default function GameDetails({ data }) {
         <meta property="twitter:image" content={game.image} />
       </Helmet>
       
-      <ConfettiLuncher />
+      { shouldRenderConfetti && <ConfettiLuncher /> }
 
       <CenteredBlock
         title={game.name}
@@ -283,46 +330,7 @@ export default function GameDetails({ data }) {
 
           <GameDataInfo>
             <GameDataList>
-              { ['eur', 'usa', 'jap'].map((region) => {
-                const releaseDate = game.releaseDate[region];
-                const hasReleaseData = Boolean(releaseDate);
-                
-                if (!hasReleaseData) {
-                  return null;
-                }
-
-                const ageInYears = game.age[region];
-                const ageInDays = game.ageInDays[region];
-                const isReleased = game.isReleased[region];
-                
-                let ageLabel = '';
-
-                if (isReleased) {
-                  if (ageInYears === 0) {
-                    ageLabel = ` (${['Aujourd\'hui !', 'Hier', 'Avant-hier'][ageInDays] || `il y a ${ageInDays} jours`})`;
-                  } else {
-                    const splittedReleaseDate = releaseDate.split('/');
-                    const anniversaryDay = +splittedReleaseDate[0];
-                    const anniversaryMonth = +splittedReleaseDate[1];
-                    const today = new Date();
-
-                    const isAnniversaryToday = anniversaryDay === today.getDate() && anniversaryMonth === today.getMonth() + 1;
-
-                    ageLabel = ` (${ageInYears} an${ageInYears > 1 ? 's': ''}${isAnniversaryToday ? ' - Anniversaire aujour\'hui ! 🎉' : ''})`;
-                  }
-                } else {
-                  const daysBeforeAnniversary = game.daysBeforeAnniversary[region];
-                  const isPlanned = daysBeforeAnniversary !== null;
-                  const isBlurryDate = releaseDate.indexOf('?') >= 0;
-
-                  const blurryLabel = isBlurryDate ? ' au moins' : '';
-
-                  if (isPlanned) {
-                    ageLabel = ` (${['Aujourd\'hui !', 'Demain !', 'Après-demain !'][daysBeforeAnniversary] || `dans${blurryLabel} ${daysBeforeAnniversary} jour${daysBeforeAnniversary > 1 ? 's': ''}`})`;
-                  }
-                }
-
-                return (
+              { ageLabels.map(({ region, ageLabel }) => (
                   <React.Fragment key={region}>
                     <ReleaseDateFlag>
                       <img
@@ -336,8 +344,7 @@ export default function GameDetails({ data }) {
                       { ageLabel && <Caption>{ ageLabel }</Caption> }
                     </ReleaseDateInfo>
                   </React.Fragment>
-                );
-              }) }
+                )) }
             </GameDataList>
           </GameDataInfo>
 
