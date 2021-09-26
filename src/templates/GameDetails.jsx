@@ -87,6 +87,8 @@ const DeviceLogo = styled.img`
 
 const GameDataInfo = styled.dd`
   ${({ theme }) => theme.typography.variants.body1}
+  display: flex;
+  flex-wrap: wrap;
 `;
 
 const PopularityInfo = styled(GameDataInfo)`
@@ -111,6 +113,10 @@ const PopularityValue = styled.span`
 const ReleaseDateInfo = styled(GameDataInfo)`
   top: -${({ theme }) => theme.spacing(1.5)};
   position: relative;
+`;
+
+const ReleaseDate = styled.span`
+  margin-right: ${({ theme }) => theme.spacing(0.5)};
 `;
 
 const Caption = styled.span`
@@ -277,7 +283,7 @@ export default function GameDetails({ data }) {
               { ['eur', 'usa', 'jap'].map((region) => {
                 const releaseDate = game.releaseDate[region];
                 const hasReleaseData = Boolean(releaseDate);
-
+                
                 if (!hasReleaseData) {
                   return null;
                 }
@@ -292,7 +298,14 @@ export default function GameDetails({ data }) {
                   if (ageInYears === 0) {
                     ageLabel = ` (${['Aujourd\'hui !', 'Hier', 'Avant-hier'][ageInDays] || `il y a ${ageInDays} jours`})`;
                   } else {
-                    ageLabel = ` (${ageInYears} an${ageInYears > 1 ? 's': ''})`
+                    const splittedReleaseDate = releaseDate.split('/');
+                    const anniversaryDay = +splittedReleaseDate[0];
+                    const anniversaryMonth = +splittedReleaseDate[1];
+                    const today = new Date();
+
+                    const isAnniversaryToday = anniversaryDay === today.getDate() && anniversaryMonth === today.getMonth() + 1;
+
+                    ageLabel = ` (${ageInYears} an${ageInYears > 1 ? 's': ''}${isAnniversaryToday ? ' - Anniversaire aujour\'hui ! 🎉' : ''})`
                   }
                 } else {
                   const daysBeforeAnniversary = game.daysBeforeAnniversary[region];
@@ -316,7 +329,7 @@ export default function GameDetails({ data }) {
                       />
                     </ReleaseDateFlag>
                     <ReleaseDateInfo>
-                      { game.releaseDate[region] }
+                      <ReleaseDate>{ game.releaseDate[region] }</ReleaseDate>
                       { ageLabel && <Caption>{ ageLabel }</Caption> }
                     </ReleaseDateInfo>
                   </React.Fragment>
