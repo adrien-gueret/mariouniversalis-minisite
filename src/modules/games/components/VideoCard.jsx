@@ -66,7 +66,6 @@ export default function VideoCard({
                 title={title}
                 frameBorder="0"
                 allow="fullscreen"
-                allowFullScreen
             />      
 
             <Content>

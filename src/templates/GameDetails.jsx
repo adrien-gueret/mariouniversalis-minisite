@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { graphql, Link } from 'gatsby';
 import styled from 'styled-components';
@@ -177,6 +177,12 @@ const Grid = styled.ul`
 `;
 
 export default function GameDetails({ data }) {
+  const [ isFirstRender, setIsFirstRender ]= useState(true);
+  
+  useEffect(() => {
+    setIsFirstRender(false);
+  }, [setIsFirstRender]);
+  
   const { game } = data.mu;
   const { videos } = game;
 
@@ -260,8 +266,6 @@ export default function GameDetails({ data }) {
     return { region, ageLabel };
   });
 
-  console.log(ageLabels);
-
   return (
     <MainLayout>
       <Helmet>
@@ -285,7 +289,7 @@ export default function GameDetails({ data }) {
         <meta property="twitter:image" content={game.image} />
       </Helmet>
       
-      { shouldRenderConfetti && <ConfettiLuncher /> }
+      { (shouldRenderConfetti && !isFirstRender) && <ConfettiLuncher /> }
 
       <CenteredBlock
         title={game.name}

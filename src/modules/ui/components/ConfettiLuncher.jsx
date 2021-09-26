@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 
-const Root = styled.div`
+const ConfettiContenainer = styled.div`
     position: fixed;
     left: 0;
     right: 0;
@@ -37,7 +37,7 @@ const totalColors = colors.length;
 
 export default function ConfettiLuncher() {
     return (
-        <Root aria-hidden>
+        <ConfettiContenainer aria-hidden>
             { new Array(100).fill(null).map((_,i) => (
                 <Confetti
                     key={i}
@@ -48,6 +48,6 @@ export default function ConfettiLuncher() {
                     }}
                 />
             )) }
-        </Root>
+        </ConfettiContenainer>
     );
 }
