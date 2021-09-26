@@ -72,9 +72,9 @@ export default function VideoCard({
 
             <Content>
                 <Header>
-                    <Title itemProp="name">{ title }</Title>
+                    <Title>{ title }</Title>
                 </Header>
-                <ChannelName itemProp="author">{ channel }</ChannelName>
+                <ChannelName>{ channel }</ChannelName>
                 { children }
                 <meta itemProp="embedUrl" content={embedUrl} />
             </Content>

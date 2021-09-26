@@ -174,6 +174,39 @@ export default function GameDetails({ data }) {
   const { game } = data.mu;
   const { videos } = game;
 
+  const popularity = Math.round(game.popularity * 10) / 10;
+
+  const jsonld = {
+    '@context': 'https://schema.org',
+    '@type': 'VideoGame',
+    name: game.name,
+    description: game.description,
+    image: game.image,
+    url: `https://www.mariouniversalis.fr/${game.slug}`,
+    genre: game.genres.map(({ name }) => name).join(' '),
+    gamePlatform: [game.device.name],
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: popularity,
+      worstRating: 0,
+      bestRating: 20,
+      ratingCount: game.totalRatings,
+    },
+    video: videos.data.map(({ id, title, thumbnail, channel, description, publishDate }) => ({
+      '@type': 'VideoObject',
+      name: title,
+      author: channel,
+      embedUrl: `https://www.youtube.com/embed/${id}`,
+      thumbnailUrl: thumbnail.url,
+      description: description,
+      uploadDate: publishDate,
+    })),
+  };
+
+  if (game.manualURL) {
+    jsonld.gameTip = game.manualUrl;
+  }
+
   return (
     <MainLayout>
       <Helmet>
@@ -183,11 +216,6 @@ export default function GameDetails({ data }) {
       <CenteredBlock
         title={game.name}
         titleComponent="h1"
-        itemScope
-        itemType="https://schema.org/VideoGame"
-        titleProps={{
-          itemProp: 'name',
-        }}
       >
         <ImageContainer>
           <Image
@@ -199,9 +227,7 @@ export default function GameDetails({ data }) {
           />
         </ImageContainer>
     
-        <Description itemProp="description">
-          { game.description }
-        </Description>
+        <Description>{ game.description }</Description>
 
         <MainGameDataList>
           <GameDataTitle>Appareil</GameDataTitle>
@@ -211,7 +237,7 @@ export default function GameDetails({ data }) {
               alt={`${game.device.name}`}
             />
 
-            <Caption>(<span itemProp="gamePlatform">{ game.device.name }</span>)</Caption>   
+            <Caption>({ game.device.name })</Caption>   
           </GameDataInfo>
 
           { game.popularity && (
@@ -220,13 +246,8 @@ export default function GameDetails({ data }) {
                 Popularité
                 <InfoTooltipContainer title="Note moyenne bayésienne sur 20" />
               </GameDataTitle>
-              <PopularityInfo
-                itemScope
-                itemType="https://schema.org/AggregateRating"
-                itemProp="aggregateRating"
-              >
-                <PopularityValue itemProp="ratingValue">{ Math.round(game.popularity * 10) / 10 }</PopularityValue>
-                <meta itemProp="bestRating" content="20" />
+              <PopularityInfo>
+                <PopularityValue>{ popularity }</PopularityValue>
               </PopularityInfo>
             </>
           ) }
@@ -310,12 +331,7 @@ export default function GameDetails({ data }) {
                     thumbnailHeight={thumbnail.height}
                     channel={channel.title}
                     videoId={id}
-                    itemProp="associatedMedia"
-                    itemScope
-                    itemType="https://schema.org/VideoObject"
-                  >
-                    <meta itemProp="thumbnail" content={thumbnail.url} />
-                  </VideoCard>
+                  />
                 </li>
               )) }
             </Grid>
@@ -332,6 +348,8 @@ export default function GameDetails({ data }) {
           )}
         </Footer>
 
+        <script type="application/ld+json">{JSON.stringify(jsonld)}</script>
+
       </CenteredBlock>
     </MainLayout>
   );
@@ -343,8 +361,12 @@ export const query = graphql`
       game(id: $id) {
         id
         name
+        slug
         description: description_fr
         image
+        genres {
+          name(lang: fr)
+        }
         imagePreview: image(hq: false)
         releaseDate: release_date(region: all, format: "DD/MM/YYYY")
         releaseYear: release_date(region: eur, format: "YYYY")
@@ -354,10 +376,13 @@ export const query = graphql`
         ageInDays: age(unit: days, region: all)
         manualURL
         popularity
+        totalRatings: total_ratings
         videos {
           data {
             id
             title
+            description
+            publishDate: publish_date
             channel {
               title
             }

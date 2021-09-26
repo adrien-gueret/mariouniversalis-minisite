@@ -94,15 +94,12 @@ export default function Image({
             )}
 
             { isOnViewPort && (
-                <>
-                    <img src={src} style={{ display: 'none' }} alt="" itemProp="image" />
-                    <ImageSrc
-                        style={{
-                            backgroundImage: `url(${src})`,
-                            opacity: mainImage.isComplete ? 1 : 0,
-                        }}
-                    />
-                </>
+                <ImageSrc
+                    style={{
+                        backgroundImage: `url(${src})`,
+                        opacity: mainImage.isComplete ? 1 : 0,
+                    }}
+                />
             )}
         </ImageContainer>
     );
