@@ -207,11 +207,29 @@ export default function GameDetails({ data }) {
     jsonld.gameTip = game.manualUrl;
   }
 
+  const title = `${game.name} - Mario Universalis`;
+
   return (
     <MainLayout>
       <Helmet>
-        <title>{ `${game.name} - Mario Universalis` }</title>
+        <title>{ title }</title>
+        <meta name="title" content={ title } />
         <meta name="description" content={game.description} />
+
+
+        { /* Open Graph / Facebook */ }
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={`https://www.mariouniversalis.fr/minisite/${game.slug}`} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={game.description} />
+        <meta property="og:image" content={game.image} />
+
+        { /* Twitter */ }
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:url" content={`https://www.mariouniversalis.fr/minisite/${game.slug}`} />
+        <meta property="twitter:title" content={title} />
+        <meta property="twitter:description" content={game.description} />
+        <meta property="twitter:image" content={game.image} />
       </Helmet>
       <CenteredBlock
         title={game.name}
