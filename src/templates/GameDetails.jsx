@@ -322,7 +322,9 @@ export default function GameDetails({ data }) {
             <>
               <GameDataTitle>
                 Popularité
-                <InfoTooltipContainer title="Note moyenne bayésienne sur 20" />
+                <InfoTooltipContainer
+                  title={`Moyenne bayésienne sur 20 calculée sur un total de ${game.totalRatings} note${game.totalRatings > 1 ? 's' : ''}`}
+                />
               </GameDataTitle>
               <PopularityInfo>
                 <PopularityValue>{ popularity }</PopularityValue>
