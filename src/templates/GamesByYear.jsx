@@ -5,6 +5,7 @@ import styled, { ThemeContext } from 'styled-components';
 
 import { GameCard, YEAR_OF_LUIGI } from '../modules/games';
 import MainLayout from '../modules/layouts/MainLayout';
+import RegionContext from '../modules/regions/context';
 import { Block, Button } from '../modules/ui';
 
 import luigiTheme from '../modules/theme/themes/luigi';
@@ -88,22 +89,22 @@ const SelectYearButton = styled(Button)`
   }
 `;
 
-export default function GamesByYear({ data, pageContext }) {
+export default function GamesByYear({ data, pageContext, ...otherProps }) {
   const [isInit, setIsInit] = useState(false);
+  const { setTheme } = useContext(ThemeContext);
+  const { region } = useContext(RegionContext);
 
   const currentYear = new Date().getFullYear();
   const isCurrentYear = pageContext.year === currentYear;
   const isYearOfLuigi = pageContext.year === YEAR_OF_LUIGI;
   
-  const allGames = data.mu.allGames.data;
+  const allGames = data.mu[`allGames_${region}`].data;
   const totalGames = allGames.length;
 
-  const unreleasedGameIds = data.mu.unreleasedGames.data.map(({ id }) => id);
+  const unreleasedGameIds = data.mu[`unreleasedGames_${region}`].data.map(({ id }) => id);
   const totalUnreleasedGames = unreleasedGameIds.length;
 
   const totalReleasedGames = totalGames - totalUnreleasedGames;
-
-  const { setTheme } = useContext(ThemeContext);
 
   const isFirstYear = pageContext.year <= pageContext.firstYearWithGames;
   const isLastYear = pageContext.year >= pageContext.lastYearWithGames;
@@ -220,25 +221,74 @@ export default function GamesByYear({ data, pageContext }) {
 }
 
 export const query = graphql`
+  fragment GameFragment on MU_Game {
+    id
+    slug(withId: true)
+    name
+    description: description_fr
+    image
+    imagePreview: image(hq: false)
+    device {
+      name
+      logo
+    }
+  }  
+
   query($year: Int!) {
     mu {
-      allGames: games(release_year: { eur: $year }, per_page: 20, order_by: { field: release_date_eur }) {
+      allGames_eur: games(release_year: { eur: $year }, per_page: 20, order_by: { field: release_date_eur }) {
         data {
-          id
-          slug(withId: true)
-          name
-          description: description_fr
-          image
-          imagePreview: image(hq: false)
+          ...GameFragment
           releaseDate: release_date(region: eur, format: "DD/MM/YYYY")
-          device {
-            name
-            logo
-          }
         }
       }
 
-      unreleasedGames: games(release_year: { eur: $year }, has_been_released: { eur: false }) {
+      unreleasedGames_eur: games(release_year: { eur: $year }, has_been_released: { eur: false }) {
+        data {
+          id
+        }
+      }
+
+      allGames_usa: games(release_year: { usa: $year }, per_page: 20, order_by: { field: release_date_usa }) {
+        data {
+          ...GameFragment
+          releaseDate: release_date(region: usa, format: "DD/MM/YYYY")
+        }
+      }
+
+      unreleasedGames_usa: games(release_year: { usa: $year }, has_been_released: { usa: false }) {
+        data {
+          id
+        }
+      }
+
+      allGames_jap: games(release_year: { jap: $year }, per_page: 20, order_by: { field: release_date_jap }) {
+        data {
+          ...GameFragment
+          releaseDate: release_date(region: jap, format: "DD/MM/YYYY")
+        }
+      }
+
+      unreleasedGames_jap: games(release_year: { jap: $year }, has_been_released: { jap: false }) {
+        data {
+          id
+        }
+      }
+
+      allGames_all: games(
+        release_year: { eur: $year, jap: $year, usa: $year, operator: OR },
+        per_page: 20,
+        order_by: { field: release_date_eur, then: { field: release_date_usa, then: { field: release_date_jap } } }
+      ) {
+        data {
+         ...GameFragment
+        }
+      }
+
+      unreleasedGames_all: games(
+        release_year: { eur: $year, jap: $year, usa: $year, operator: OR },
+        has_been_released: { eur: false, jap: false, usa: false, operator: AND }
+      ) {
         data {
           id
         }

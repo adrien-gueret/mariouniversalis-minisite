@@ -3,7 +3,7 @@ import { Link } from 'gatsby';
 import styled from 'styled-components';
 
 import useBreakpoint from '../../ui/hooks/useBreakpoint';
-import { Image, InfoTooltip } from '../../ui';
+import { Image } from '../../ui';
 
 const Article = styled.article`
     display: flex;
@@ -59,10 +59,6 @@ const ReleaseDate = styled.p`
     color: ${({ theme }) => theme.palette.text.light};
 `;
 
-const InfoIconContainer = styled(InfoTooltip)`
-    margin-left: ${({ theme }) => theme.spacing(.5)};
-`;
-
 const Root = styled(Link)`
     color: inherit;
     text-decoration: none;
@@ -113,10 +109,11 @@ export default function GameCard({
                         <DeviceLogo src={deviceLogo} alt={deviceName} title={deviceName} />
                     </Header>
                     
-                    <ReleaseDate>
-                        { !isReleased && 'Prévu le'} { releaseDate }
-                        <InfoIconContainer title="Sortie européenne"/>
-                    </ReleaseDate>
+                    { releaseDate && (
+                        <ReleaseDate>
+                            { !isReleased && 'Prévu le'} { releaseDate }
+                        </ReleaseDate>
+                    )}
                 </Content>
             </Article>
         </Root>

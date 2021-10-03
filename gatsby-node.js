@@ -58,14 +58,25 @@ exports.createPages = async ({ actions, graphql }) => {
     const lastYearWithGames = activeYears[activeYears.length - 1];
 
     activeYears.forEach((year) => {
-        createPage({
-            path: `jeux-de-${year}`,
+        const page = {
             component: path.resolve(`./src/templates/GamesByYear.jsx`),
             context: {
                 year,
                 firstYearWithGames,
                 lastYearWithGames,
             },
+        };
+
+        createPage({
+            path: `jeux-de-${year}`,
+            ...page,
+        });
+
+        ['europe', 'japon', 'etats-unis'].forEach((region) => {
+            createPage({
+                path: `jeux-de-${year}/${region}`,
+                ...page,
+            });
         });
     });
 

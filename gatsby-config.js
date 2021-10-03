@@ -1,6 +1,6 @@
 function getActiveYears() {
   const currentYear = new Date().getFullYear();
-  const firstYearWithGames = 1986;
+  const firstYearWithGames = 1983;
   const lastYearWithGames = currentYear + 1;
   return [...Array(lastYearWithGames - firstYearWithGames + 1).keys()].map(x => x + firstYearWithGames);
 }
