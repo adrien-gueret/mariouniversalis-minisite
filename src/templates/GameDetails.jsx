@@ -7,18 +7,10 @@ import VideoCard from '../modules/games/components/VideoCard';
 import ChevronLeft from '../modules/icons/ChevronLeft';
 import External from '../modules/icons/External';
 import MainLayout from '../modules/layouts/MainLayout';
+import FLAGS from '../modules/regions/flags';
 import { Block, Button, Image, InfoTooltip, ConfettiLuncher } from '../modules/ui';
 
-import flagEUR from './images/eur.png';
-import flagUSA from './images/usa.png';
-import flagJAP from './images/jap.png';
 import warioSign from './images/wario_sign.png';
-
-const FLAGS = {
-  eur: flagEUR,
-  usa: flagUSA,
-  jap: flagJAP,
-};
 
 const FLAGS_ALTS = {
   eur: 'Sortie européenne',

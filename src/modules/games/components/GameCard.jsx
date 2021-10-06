@@ -54,9 +54,10 @@ const Title = styled.h2`
     ${({ theme }) => theme.typography.variants.subtitle}
 `;
 
-const ReleaseDate = styled.p`
+const CaptionContent = styled.p`
     ${({ theme }) => theme.typography.variants.caption}
     color: ${({ theme }) => theme.palette.text.light};
+    margin-top: auto;
 `;
 
 const Root = styled(Link)`
@@ -82,8 +83,6 @@ export default function GameCard({
     imagePreview,
     deviceName,
     deviceLogo,
-    releaseDate,
-    isReleased,
     children,
     ...otherProps
 }) {
@@ -108,12 +107,8 @@ export default function GameCard({
                         <Title>{ name }</Title>
                         <DeviceLogo src={deviceLogo} alt={deviceName} title={deviceName} />
                     </Header>
-                    
-                    { releaseDate && (
-                        <ReleaseDate>
-                            { !isReleased && 'Prévu le'} { releaseDate }
-                        </ReleaseDate>
-                    )}
+
+                    { children && <CaptionContent>{ children }</CaptionContent> }
                 </Content>
             </Article>
         </Root>

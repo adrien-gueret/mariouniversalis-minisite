@@ -6,12 +6,19 @@ import styled, { ThemeContext } from 'styled-components';
 import { GameCard, YEAR_OF_LUIGI } from '../modules/games';
 import MainLayout from '../modules/layouts/MainLayout';
 import RegionContext from '../modules/regions/context';
+import FLAGS from '../modules/regions/flags';
 import { Block, Button } from '../modules/ui';
 
 import luigiTheme from '../modules/theme/themes/luigi';
 
 import ChevronLeft from '../modules/icons/ChevronLeft';
 import ChevronRight from '../modules/icons/ChevronRight';
+
+const FLAGS_ALTS = {
+  eur: 'Sorti cette année-là en Europe',
+  usa: 'Sorti cette année-là aux Etats-Unis',
+  jap: 'Sorti cette année-là au Japon'
+};
 
 const CenteredBlock = styled(Block)`
   margin: auto;
@@ -50,6 +57,14 @@ const Grid = styled.div`
 const GridGameItem = styled(GameCard)`
   opacity: 0;
   transition: opacity 300ms;
+`;
+
+const ReleaseDate = styled.div`
+  margin-top: ${({ theme }) => theme.spacing(2)};
+`;
+
+const Flag = styled.img`
+  margin: ${({ theme }) => theme.spacing(2, 1, 0, 0)};
 `;
 
 const YearNavigation = styled.nav`
@@ -157,25 +172,48 @@ export default function GamesByYear({ data, pageContext, ...otherProps }) {
 
             <Grid>
               { 
-                allGames.map((game, index) => (
-                  <GridGameItem
-                    key={game.id}
-                    name={game.name}
-                    image={game.image}
-                    slug={game.slug}
-                    imagePreview={game.imagePreview}
-                    deviceName={game.device.name}
-                    deviceLogo={game.device.logo}
-                    releaseDate={game.releaseDate}
-                    isReleased={!unreleasedGameIds.includes(game.id)}
-                    style={{
-                      opacity: (isInit || index === 0) ? 1 : 0,
-                      transitionDelay: `${(index - 1) * 50}ms`,
-                    }}
-                  >
-                    { game.description }
-                  </GridGameItem>
-                ))
+                allGames.map((game, index) => {
+                  const { id, releaseDate } = game;
+                  const isReleased = !unreleasedGameIds.includes(id);
+                  let releaseDateContent = null;
+
+                  if (Boolean(releaseDate)) {
+                    releaseDateContent =  (typeof releaseDate === 'string') ? (
+                      <ReleaseDate>
+                          { !isReleased && 'Prévu le'} { releaseDate }
+                      </ReleaseDate>
+                    ) : (
+                        Object.keys(releaseDate)
+                            .filter((region) => +releaseDate[region] === pageContext.year)
+                            .map((region) => (
+                                <Flag
+                                    key={region}
+                                    src={FLAGS[region]}
+                                    alt={FLAGS_ALTS[region]}
+                                    title={FLAGS_ALTS[region]}
+                                />
+                            ))
+                    );
+                  }
+
+                  return (
+                    <GridGameItem
+                      key={game.id}
+                      name={game.name}
+                      image={game.image}
+                      slug={game.slug}
+                      imagePreview={game.imagePreview}
+                      deviceName={game.device.name}
+                      deviceLogo={game.device.logo}
+                      style={{
+                        opacity: (isInit || index === 0) ? 1 : 0,
+                        transitionDelay: `${(index - 1) * 50}ms`,
+                      }}
+                    >
+                      { releaseDateContent }
+                    </GridGameItem>
+                  );
+                })
               }
             </Grid>
           </>
@@ -225,7 +263,6 @@ export const query = graphql`
     id
     slug(withId: true)
     name
-    description: description_fr
     image
     imagePreview: image(hq: false)
     device {
@@ -282,6 +319,7 @@ export const query = graphql`
       ) {
         data {
          ...GameFragment
+         releaseDate: release_date(region: all, format: "YYYY")
         }
       }
 
