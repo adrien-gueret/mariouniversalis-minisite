@@ -15,9 +15,9 @@ import ChevronLeft from '../modules/icons/ChevronLeft';
 import ChevronRight from '../modules/icons/ChevronRight';
 
 const FLAGS_ALTS = {
-  eur: 'Sorti cette année-là en Europe',
-  usa: 'Sorti cette année-là aux Etats-Unis',
-  jap: 'Sorti cette année-là au Japon'
+  eur: (date) => `Sorti le ${date} en Europe`,
+  usa: (date) => `Sorti le ${date} aux Etats-Unis`,
+  jap: (date) => `Sorti le ${date} au Japon`,
 };
 
 const CenteredBlock = styled(Block)`
@@ -65,6 +65,7 @@ const ReleaseDate = styled.div`
 
 const Flag = styled.img`
   margin: ${({ theme }) => theme.spacing(2, 1, 0, 0)};
+  cursor: help;
 `;
 
 const YearNavigation = styled.nav`
@@ -173,7 +174,7 @@ export default function GamesByYear({ data, pageContext, ...otherProps }) {
             <Grid>
               { 
                 allGames.map((game, index) => {
-                  const { id, releaseDate } = game;
+                  const { id, releaseDate, releaseYear } = game;
                   const isReleased = !unreleasedGameIds.includes(id);
                   let releaseDateContent = null;
 
@@ -183,14 +184,15 @@ export default function GamesByYear({ data, pageContext, ...otherProps }) {
                           { !isReleased && 'Prévu le'} { releaseDate }
                       </ReleaseDate>
                     ) : (
-                        Object.keys(releaseDate)
-                            .filter((region) => +releaseDate[region] === pageContext.year)
+                        Object
+                            .keys(releaseYear)
+                            .filter((region) => +releaseYear[region] === pageContext.year)
                             .map((region) => (
                                 <Flag
                                     key={region}
                                     src={FLAGS[region]}
-                                    alt={FLAGS_ALTS[region]}
-                                    title={FLAGS_ALTS[region]}
+                                    alt={FLAGS_ALTS[region](releaseDate[region])}
+                                    title={FLAGS_ALTS[region](releaseDate[region])}
                                 />
                             ))
                     );
@@ -319,7 +321,8 @@ export const query = graphql`
       ) {
         data {
          ...GameFragment
-         releaseDate: release_date(region: all, format: "YYYY")
+         releaseDate: release_date(region: all, format: "DD/MM/YYYY")
+         releaseYear: release_date(region: all, format: "YYYY")
         }
       }
 
