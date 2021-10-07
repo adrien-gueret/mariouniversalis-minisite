@@ -214,14 +214,10 @@ export default function GameDetails({ data }) {
   const title = `${game.name} - Mario Universalis`;
   let shouldRenderConfetti = false;
 
-  const ageLabels = ['eur', 'usa', 'jap'].map((region) => {
+  const ageLabels = ['eur', 'usa', 'jap']
+  .filter((region) => Boolean(game.releaseDate[region]))
+  .map((region) => {
     const releaseDate = game.releaseDate[region];
-    const hasReleaseData = Boolean(releaseDate);
-    
-    if (!hasReleaseData) {
-      return { region };
-    }
-
     const ageInYears = game.age[region];
     const ageInDays = game.ageInDays[region];
     const isReleased = game.isReleased[region];
