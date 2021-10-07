@@ -7,18 +7,13 @@ import { GameCard, YEAR_OF_LUIGI } from '../modules/games';
 import MainLayout from '../modules/layouts/MainLayout';
 import RegionContext from '../modules/regions/context';
 import FLAGS from '../modules/regions/flags';
+import REGION_LABELS from '../modules/regions/regionLabels';
 import { Block, Button } from '../modules/ui';
 
 import luigiTheme from '../modules/theme/themes/luigi';
 
 import ChevronLeft from '../modules/icons/ChevronLeft';
 import ChevronRight from '../modules/icons/ChevronRight';
-
-const FLAGS_ALTS = {
-  eur: (date) => `Sorti le ${date} en Europe`,
-  usa: (date) => `Sorti le ${date} aux Etats-Unis`,
-  jap: (date) => `Sorti le ${date} au Japon`,
-};
 
 const CenteredBlock = styled(Block)`
   margin: auto;
@@ -191,8 +186,8 @@ export default function GamesByYear({ data, pageContext, ...otherProps }) {
                                 <Flag
                                     key={region}
                                     src={FLAGS[region]}
-                                    alt={FLAGS_ALTS[region](releaseDate[region])}
-                                    title={FLAGS_ALTS[region](releaseDate[region])}
+                                    alt={`Sorti le ${releaseDate[region]} ${REGION_LABELS[region]}`}
+                                    title={`Sorti le ${releaseDate[region]} ${REGION_LABELS[region]}`}
                                 />
                             ))
                     );
