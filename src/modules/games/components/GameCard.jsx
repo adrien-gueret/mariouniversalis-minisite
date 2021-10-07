@@ -54,7 +54,7 @@ const Title = styled.h2`
     ${({ theme }) => theme.typography.variants.subtitle}
 `;
 
-const CaptionContent = styled.p`
+const CaptionContent = styled.div`
     ${({ theme }) => theme.typography.variants.caption}
     color: ${({ theme }) => theme.palette.text.light};
     margin-top: auto;

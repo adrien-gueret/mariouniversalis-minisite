@@ -8,6 +8,7 @@ import MainLayout from '../modules/layouts/MainLayout';
 import RegionContext from '../modules/regions/context';
 import FLAGS from '../modules/regions/flags';
 import REGION_LABELS from '../modules/regions/regionLabels';
+import RegionSwitcher from '../modules/regions/RegionSwitcher';
 import { Block, Button } from '../modules/ui';
 
 import luigiTheme from '../modules/theme/themes/luigi';
@@ -147,13 +148,21 @@ export default function GamesByYear({ data, pageContext, ...otherProps }) {
         { totalGames > 0 ? (
           <>
             { Boolean(totalReleasedGames) && (
-              <p>
+              <div>
                 { totalReleasedGames > 1 ? (
-                  <><strong>{ totalReleasedGames }</strong> jeux sont sortis {isCurrentYear ? ' cette année' : ` en ${pageContext.year}`}.</>
+                  <>
+                    <strong>{ totalReleasedGames }</strong>
+                    { ' jeux sont sortis ' }
+                    <RegionSwitcher year={pageContext.year} />
+                    {isCurrentYear ? ' cette année' : ` en ${pageContext.year}`}.
+                  </>
                 ) : (
-                  <><strong>Un seul</strong> jeu est sorti {isCurrentYear ? ' cette année' : ` en ${pageContext.year}`}.</>
+                  <>
+                    <strong>Un seul</strong>
+                    <RegionSwitcher year={pageContext.year} />
+                    { ' jeu est sorti' } {isCurrentYear ? ' cette année' : ` en ${pageContext.year}`}.</>
                 )}
-              </p>
+              </div>
             )}
             
             { Boolean(totalUnreleasedGames) && (

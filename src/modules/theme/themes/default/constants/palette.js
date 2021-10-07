@@ -5,6 +5,7 @@ export const baseColors = {
     red: '#da0202',
     green: '#34a838',
     grey: 'rgba(128, 128, 128, .9)',
+    semiAlpha: 'rgba(0, 0, 0, .1)',
 };
 
 const palette = {
@@ -16,6 +17,7 @@ const palette = {
     background: {
         primary: baseColors.lightBlack,
         secondary: baseColors.white,
+        focus: baseColors.semiAlpha,
     },
     button: {
         primary: baseColors.red,
