@@ -1,7 +1,7 @@
-import React, { useLayoutEffect, useEffect, useState, useContext } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { Helmet } from 'react-helmet';
 import { graphql, Link } from 'gatsby';
-import styled, { ThemeContext } from 'styled-components';
+import styled, { ThemeContext, keyframes } from 'styled-components';
 
 import { GameCard, YEAR_OF_LUIGI } from '../modules/games';
 import MainLayout from '../modules/layouts/MainLayout';
@@ -50,9 +50,19 @@ const Grid = styled.div`
   }
 `;
 
+const shadeAnimation = keyframes`
+  from {
+    opacity: 0.1;
+  }
+
+  to {
+    opacity 1;
+  }
+`;
+
 const GridGameItem = styled(GameCard)`
-  opacity: 0;
-  transition: opacity 300ms;
+  opacity: 0.1;
+  animation: 300ms ${shadeAnimation} ease-in 1 forwards;
 `;
 
 const ReleaseDate = styled.div`
@@ -102,7 +112,6 @@ const SelectYearButton = styled(Button)`
 `;
 
 export default function GamesByYear({ data, pageContext, ...otherProps }) {
-  const [isInit, setIsInit] = useState(false);
   const { setTheme } = useContext(ThemeContext);
   const { region } = useContext(RegionContext);
 
@@ -120,10 +129,6 @@ export default function GamesByYear({ data, pageContext, ...otherProps }) {
 
   const isFirstYear = pageContext.year <= pageContext.firstYearWithGames;
   const isLastYear = pageContext.year >= pageContext.lastYearWithGames;
-
-  useLayoutEffect(() => {
-    setIsInit(true);
-  }, []);
 
   useEffect(() => {
     if (isYearOfLuigi) {
@@ -212,8 +217,7 @@ export default function GamesByYear({ data, pageContext, ...otherProps }) {
                       deviceName={game.device.name}
                       deviceLogo={game.device.logo}
                       style={{
-                        opacity: (isInit || index === 0) ? 1 : 0,
-                        transitionDelay: `${(index - 1) * 50}ms`,
+                        animationDelay: `${index * 50}ms`,
                       }}
                     >
                       { releaseDateContent }
