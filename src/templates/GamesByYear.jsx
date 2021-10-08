@@ -189,23 +189,39 @@ export default function GamesByYear({ data, pageContext, ...otherProps }) {
                   let releaseDateContent = null;
 
                   if (Boolean(releaseDate)) {
-                    releaseDateContent =  (typeof releaseDate === 'string') ? (
-                      <ReleaseDate>
-                          { !isReleased && 'Prévu le'} { releaseDate }
-                      </ReleaseDate>
-                    ) : (
-                        Object
-                            .keys(releaseYear)
-                            .filter((region) => +releaseYear[region] === pageContext.year)
-                            .map((region) => (
-                                <Flag
-                                    key={region}
-                                    src={FLAGS[region]}
-                                    alt={`Sorti le ${releaseDate[region]} ${REGION_LABELS[region]}`}
-                                    title={`Sorti le ${releaseDate[region]} ${REGION_LABELS[region]}`}
-                                />
-                            ))
-                    );
+                    const isOnSpecificRegion = typeof releaseDate === 'string';
+
+                    if (isOnSpecificRegion) {
+                      releaseDateContent = (
+                        <ReleaseDate>
+                            { !isReleased && 'Prévu le'} { releaseDate }
+                        </ReleaseDate>
+                      );
+                    } else {
+                      const isGlobalRelease = releaseDate.eur === releaseDate.usa && releaseDate.usa === releaseDate.jap;
+
+                      if (isGlobalRelease) {
+                        releaseDateContent = (
+                          <Flag
+                              src={FLAGS.all}
+                              alt={`Sortie mondiale le ${releaseDate.eur}`}
+                              title={`Sortie mondiale le ${releaseDate.eur}`}
+                          />
+                        );
+                      } else {
+                        releaseDateContent = Object
+                          .keys(releaseYear)
+                          .filter((region) => +releaseYear[region] === pageContext.year)
+                          .map((region) => (
+                              <Flag
+                                  key={region}
+                                  src={FLAGS[region]}
+                                  alt={`Sorti le ${releaseDate[region]} ${REGION_LABELS[region]}`}
+                                  title={`Sorti le ${releaseDate[region]} ${REGION_LABELS[region]}`}
+                              />
+                        ));
+                      }
+                    }
                   }
 
                   return (
