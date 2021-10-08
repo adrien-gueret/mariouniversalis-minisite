@@ -8,6 +8,7 @@ import MainLayout from '../modules/layouts/MainLayout';
 import RegionContext from '../modules/regions/context';
 import FLAGS from '../modules/regions/flags';
 import REGION_LABELS from '../modules/regions/regionLabels';
+import REGION_SLUGS from '../modules/regions/regionSlugs';
 import RegionSwitcher from '../modules/regions/RegionSwitcher';
 import { Block, Button } from '../modules/ui';
 
@@ -240,7 +241,7 @@ export default function GamesByYear({ data, pageContext, ...otherProps }) {
             style={{ visibility: isFirstYear ? 'hidden' : 'visible' }}
             $primary
             as={isFirstYear ? 'span' : Link}
-            to={isFirstYear ? void 0 : `/jeux-de-${pageContext.year - 1}`}
+            to={isFirstYear ? void 0 : `/jeux-de-${pageContext.year - 1}${REGION_SLUGS[region]}`}
           >
             <ChevronLeft />
             <span><YearLabel>Année </YearLabel>{pageContext.year - 1}</span>
@@ -255,7 +256,7 @@ export default function GamesByYear({ data, pageContext, ...otherProps }) {
               style={{ visibility: isLastYear ? 'hidden' : 'visible' }}
               $primary
               as={isLastYear ? 'span' : Link}
-              to={isLastYear ? void 0 : `/jeux-de-${pageContext.year + 1}`}
+              to={isLastYear ? void 0 : `/jeux-de-${pageContext.year + 1}${REGION_SLUGS[region]}`}
             >
               <span><YearLabel>Année </YearLabel>{pageContext.year + 1}</span>
               <ChevronRight />
