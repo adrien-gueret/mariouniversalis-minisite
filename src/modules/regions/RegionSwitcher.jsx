@@ -24,8 +24,9 @@ const SwitcherNav = styled.nav`
     position: absolute;
     z-index: 10;
     overflow: hidden;
-    max-height: 0;
-    transition: max-height 300ms ease-in;
+    transform: scale(0);
+    transform-origin: top center;
+    transition: transform 300ms ease-in;
 `;
 
 const SwitcherList = styled.ul`
@@ -55,7 +56,7 @@ const SwitcherFlag = styled.img`
     margin-right: ${({ theme }) => theme.spacing(1)};
 `;
 
-export default function RegionSwitcher({ year }) {
+export default function RegionSwitcher({ id = 'region-switcher', year }) {
     const [isOpen, setIsOpen] = useState(false);
     const { region, setRegion } = useContext(RegionContext);
     const navRef = useRef(null);
@@ -78,17 +79,32 @@ export default function RegionSwitcher({ year }) {
         setIsOpen(!isOpen);
     }, [isOpen]);
 
+    const idButton = `${id}-button`;
+    const idMenu = `${id}-menu`;
+
     return (
         <Switcher>
-            <SwitcherButton onClick={onButtonClick} ref={buttonRef}>
+            <SwitcherButton
+                onClick={onButtonClick}
+                ref={buttonRef}
+                id={idButton}
+                aria-controls={idMenu}
+                aria-haspopup="true"
+                aria-expanded={isOpen ? 'true' : 'false'}
+            >
                 <SwitcherFlag
                     src={FLAGS[region]}
                     alt=""
                 />
                 { LABELS[region] }
             </SwitcherButton>
-            <SwitcherNav style={{ maxHeight: isOpen ? 500 : 0 }} ref={navRef}>
-                <SwitcherList>
+            <SwitcherNav
+                style={{ transform: `scale(${isOpen ? 1 : 0 })` }}
+                ref={navRef}
+                id={idMenu}
+                aria-labelledby={idButton}
+            >
+                <SwitcherList role="menu">
                    { ['eur', 'usa', 'jap', 'all']
                     .filter((navRegion) => navRegion !== region)
                     .map((navRegion) => (
