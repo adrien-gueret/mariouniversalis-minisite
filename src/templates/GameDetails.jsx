@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Helmet } from 'react-helmet';
 import { graphql, Link } from 'gatsby';
 import styled from 'styled-components';
@@ -7,7 +7,9 @@ import VideoCard from '../modules/games/components/VideoCard';
 import ChevronLeft from '../modules/icons/ChevronLeft';
 import External from '../modules/icons/External';
 import MainLayout from '../modules/layouts/MainLayout';
+import RegionContext from '../modules/regions/context';
 import FLAGS from '../modules/regions/flags';
+import SLUGS from '../modules/regions/regionSlugs';
 import { Block, Button, Image, InfoTooltip, ConfettiLuncher } from '../modules/ui';
 
 import warioSign from './images/wario_sign.png';
@@ -174,6 +176,8 @@ export default function GameDetails({ data }) {
   useEffect(() => {
     setIsFirstRender(false);
   }, [setIsFirstRender]);
+
+  const { region: currentRegion } = useContext(RegionContext);
   
   const { game } = data.mu;
   const { videos } = game;
@@ -253,6 +257,8 @@ export default function GameDetails({ data }) {
 
     return { region, ageLabel };
   });
+
+  const releaseYear =  game.releaseYear[currentRegion] || game.releaseYear.eur || game.releaseYear.usa || game.releaseYear.jap;
 
   return (
     <MainLayout>
@@ -375,10 +381,10 @@ export default function GameDetails({ data }) {
         
 
         <Footer>
-          { game.releaseYear && (
-            <PrevYearButton $primary as={Link} to={`/jeux-de-${game.releaseYear}`}>
+          { releaseYear && (
+            <PrevYearButton $primary as={Link} to={`/jeux-de-${releaseYear}${SLUGS[currentRegion]}`}>
               <ChevronLeft />
-              <span><YearLabel>Voir les autres jeux sortis en </YearLabel>{game.releaseYear}</span>
+              <span><YearLabel>Voir les autres jeux sortis en </YearLabel>{releaseYear}</span>
             </PrevYearButton>
           )}
         </Footer>
@@ -404,7 +410,7 @@ export const query = graphql`
         }
         imagePreview: image(hq: false)
         releaseDate: release_date(region: all, format: "DD/MM/YYYY")
-        releaseYear: release_date(region: eur, format: "YYYY")
+        releaseYear: release_date(region: all, format: "YYYY")
         isReleased: is_released(region: all)
         daysBeforeAnniversary: days_before_anniversary
         age(region: all)
