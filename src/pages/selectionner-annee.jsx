@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Helmet } from 'react-helmet';
 import { graphql, Link } from 'gatsby';
 import styled from 'styled-components';
 
 import MainLayout from '../modules/layouts/MainLayout';
+import RegionContext from '../modules/regions/context';
+import SLUGS from '../modules/regions/regionSlugs';
 import { Block, Button } from '../modules/ui';
 
 const CenteredBlock = styled(Block)`
@@ -15,6 +17,7 @@ const YearButton = styled(Button)`
 `;
 
 export default function SelectYear({ data }) {
+  const { region } = useContext(RegionContext);
   const { activeYears } = data.site.siteMetadata;
 
   return (
@@ -28,7 +31,7 @@ export default function SelectYear({ data }) {
         titleComponent="h1"
       >
         { activeYears.map(year => (
-          <YearButton key={year} as={Link} to={`/jeux-de-${year}`}>{ year }</YearButton>
+          <YearButton key={year} as={Link} to={`/jeux-de-${year}${SLUGS[region]}`}>{ year }</YearButton>
         )) }
       </CenteredBlock>
     </MainLayout>

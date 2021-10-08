@@ -1,3 +1,3 @@
 import { createContext } from 'react';
 
-export default createContext('eur');
+export default createContext({ region: 'all', setRegion() {}});
