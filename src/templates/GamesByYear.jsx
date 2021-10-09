@@ -118,6 +118,7 @@ export default function GamesByYear({ data, pageContext, ...otherProps }) {
 
   const currentYear = new Date().getFullYear();
   const isCurrentYear = pageContext.year === currentYear;
+  const isFutureYear = pageContext.year > currentYear;
   const isYearOfLuigi = pageContext.year === YEAR_OF_LUIGI;
   
   const allGames = data.mu[`allGames_${region}`].data;
@@ -248,7 +249,10 @@ export default function GamesByYear({ data, pageContext, ...otherProps }) {
         ) : (
           <>
             <p>
-              Cette année ne possède aucun jeu Mario{isCurrentYear && ' pour le moment' }...
+              Aucun jeu Mario n'est sorti
+              <RegionSwitcher year={pageContext.year} />
+              {(isCurrentYear || isFutureYear) && ' pour le moment' }
+              cette année-là...
             </p>
           </>
         )}
