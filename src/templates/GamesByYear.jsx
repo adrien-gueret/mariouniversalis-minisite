@@ -165,8 +165,9 @@ export default function GamesByYear({ data, pageContext, ...otherProps }) {
                 ) : (
                   <>
                     <strong>Un seul</strong>
+                    { ' jeu est sorti' }
                     <RegionSwitcher year={pageContext.year} />
-                    { ' jeu est sorti' } {isCurrentYear ? ' cette année' : ` en ${pageContext.year}`}.</>
+                    {isCurrentYear ? ' cette année' : ` en ${pageContext.year}`}.</>
                 )}
               </div>
             )}
