@@ -31,6 +31,11 @@ export default function useImage(src) {
 
         image.onload = complete;
         image.onerror = () => setHasFailed(true);
+
+        return () => {
+            image.onload = null;
+            image.onerror = null;
+        };
     }, [image]);
 
     return {

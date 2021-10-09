@@ -42,7 +42,6 @@ export default function Image({
 
     const isLoading = (previewImage.isLoading && mainImage.isLoading) || (previewImage.hasFailed && mainImage.isLoading);
 
-
     useLayoutEffect(() => {
         if (!containerRef.current || !('IntersectionObserver' in window)) {
             return;
