@@ -17,7 +17,8 @@ import warioSign from './images/wario_sign.png';
 const FLAGS_ALTS = {
   eur: 'Sortie européenne',
   usa: 'Sortie américaine',
-  jap: 'Sortie japonaise'
+  jap: 'Sortie japonaise',
+  all: 'Sortie mondiale',
 };
 
 const CenteredBlock = styled(Block)`
@@ -218,7 +219,10 @@ export default function GameDetails({ data }) {
   const title = `${game.name} - Mario Universalis`;
   let shouldRenderConfetti = false;
 
-  const ageLabels = ['eur', 'usa', 'jap']
+  const isGlobalRelease = game.releaseDate.eur === game.releaseDate.usa && game.releaseDate.usa === game.releaseDate.jap;
+  const regionsToCheck = isGlobalRelease ? ['eur'] : ['eur', 'usa', 'jap'];
+
+  const ageLabels = regionsToCheck
   .filter((region) => Boolean(game.releaseDate[region]))
   .map((region) => {
     const releaseDate = game.releaseDate[region];
@@ -255,7 +259,7 @@ export default function GameDetails({ data }) {
       }
     }
 
-    return { region, ageLabel };
+    return { region, flagRegion: isGlobalRelease ? 'all' : region, ageLabel };
   });
 
   const releaseYear =  game.releaseYear[currentRegion] || game.releaseYear.eur || game.releaseYear.usa || game.releaseYear.jap;
@@ -326,17 +330,17 @@ export default function GameDetails({ data }) {
             </>
           ) }
 
-          <GameDataTitle>Dates de sortie</GameDataTitle>
+          <GameDataTitle>{ `Date${isGlobalRelease ? '' : 's'} de sortie` }</GameDataTitle>
 
           <GameDataInfo>
             <GameDataList>
-              { ageLabels.map(({ region, ageLabel }) => (
+              { ageLabels.map(({ region, flagRegion, ageLabel }) => (
                   <React.Fragment key={region}>
                     <ReleaseDateFlag>
                       <img
-                        src={FLAGS[region]}
-                        alt={FLAGS_ALTS[region]}
-                        title={FLAGS_ALTS[region]}
+                        src={FLAGS[flagRegion]}
+                        alt={FLAGS_ALTS[flagRegion]}
+                        title={FLAGS_ALTS[flagRegion]}
                       />
                     </ReleaseDateFlag>
                     <ReleaseDateInfo>
