@@ -58,7 +58,7 @@ const SwitcherFlag = styled.img`
 
 export default function RegionSwitcher({ id = 'region-switcher', year }) {
     const [isOpen, setIsOpen] = useState(false);
-    const { region, setRegion } = useContext(RegionContext);
+    const { region } = useContext(RegionContext);
     const navRef = useRef(null);
     const buttonRef = useRef(null);
 
@@ -109,10 +109,7 @@ export default function RegionSwitcher({ id = 'region-switcher', year }) {
                     .filter((navRegion) => navRegion !== region)
                     .map((navRegion) => (
                             <SwitcherListItem key={navRegion}>
-                                <SwitcherLink
-                                    to={`/jeux-de-${year}${SLUGS[navRegion]}`}
-                                    onClick={() => setRegion(navRegion)}
-                                >
+                                <SwitcherLink to={`/jeux-de-${year}${SLUGS[navRegion]}`}>
                                     <SwitcherFlag
                                         src={FLAGS[navRegion]}
                                         alt=""

@@ -11,8 +11,6 @@ export default function App({ children }) {
     const [theme, setTheme] = useState(defaultTheme);
     const setThemeToExpose = (newTheme = defaultTheme) => setTheme(newTheme);
 
-    console.log('App');
-
     return (
         <ThemeProvider theme={{
             ...theme,
