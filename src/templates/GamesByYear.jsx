@@ -142,6 +142,10 @@ export default function GamesByYear({ data, pageContext, ...otherProps }) {
     return () => setTheme();
   }, [isYearOfLuigi, setTheme]);
 
+  useEffect(() => {
+    localStorage.setItem('year', pageContext.year);
+  }, [pageContext.year]);
+  
   return (
     <MainLayout isYearOfLuigi={isYearOfLuigi}>
       <Helmet>

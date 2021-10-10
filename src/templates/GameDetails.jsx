@@ -262,7 +262,10 @@ export default function GameDetails({ data }) {
     return { region, flagRegion: isGlobalRelease ? 'all' : region, ageLabel };
   });
 
-  const releaseYear =  game.releaseYear[currentRegion] || game.releaseYear.eur || game.releaseYear.usa || game.releaseYear.jap;
+  const isSSR = typeof window === 'undefined';
+  const releaseYear =  game.releaseYear[currentRegion]
+    || (!isSSR && +localStorage.getItem('year'))
+    || game.releaseYear.eur || game.releaseYear.usa || game.releaseYear.jap;
 
   return (
     <MainLayout>
