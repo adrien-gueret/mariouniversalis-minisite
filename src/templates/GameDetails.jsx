@@ -409,7 +409,7 @@ export const query = graphql`
       game(id: $id) {
         id
         name
-        slug
+        slug(withId: true)
         description: description_fr
         image
         genres {
