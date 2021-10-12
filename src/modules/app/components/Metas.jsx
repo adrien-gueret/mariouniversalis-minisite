@@ -1,25 +1,31 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 
-export default function Metas({ title, description, url, image }) {
+export default function Metas({
+    title = 'Mini-site des jeux Super Mario',
+    description = "Découvrez une liste presque complète des jeux Super Mario avec, pour chacun de ces jeux, sa boite, une description et d'autres informations comme le manuel d'utilisation !",
+    url = window?.location?.href,
+    image = 'https://pbs.twimg.com/profile_banners/1340236746211127296/1608376902/600x200',
+}) {
+    const finalTitle = title ? `${title} - Mario Universalis` : 'Mario Universalis';
     return (
         <Helmet>
-            <title>{ title }</title>
-            <meta name="title" content={title} />
+            <title>{ finalTitle }</title>
+            <meta name="title" content={finalTitle} />
             <meta name="description" content={description} />
 
 
             { /* Open Graph / Facebook */ }
             <meta property="og:type" content="website" />
             <meta property="og:url" content={url} />
-            <meta property="og:title" content={title} />
+            <meta property="og:title" content={finalTitle} />
             <meta property="og:description" content={description} />
             <meta property="og:image" content={image} />
 
             { /* Twitter */ }
             <meta property="twitter:card" content="summary_large_image" />
             <meta property="twitter:url" content={url} />
-            <meta property="twitter:title" content={title} />
+            <meta property="twitter:title" content={finalTitle} />
             <meta property="twitter:description" content={description} />
             <meta property="twitter:image" content={image} />
         </Helmet>

@@ -1,8 +1,8 @@
 import React, { useEffect, useContext } from 'react';
-import { Helmet } from 'react-helmet';
 import { graphql, Link } from 'gatsby';
 import styled, { ThemeContext, keyframes } from 'styled-components';
 
+import Metas from '../modules/app/components/Metas';
 import { GameCard, YEAR_OF_LUIGI } from '../modules/games';
 import MainLayout from '../modules/layouts/MainLayout';
 import RegionContext from '../modules/regions/context';
@@ -148,10 +148,10 @@ export default function GamesByYear({ data, pageContext, ...otherProps }) {
   
   return (
     <MainLayout isYearOfLuigi={isYearOfLuigi}>
-      <Helmet>
-        <title>{ `Liste des jeux de ${pageContext.year} - Mario Universalis` }</title>
-        <meta name="description" content={`Liste des jeux Super Mario de l'année ${pageContext.year}`} />
-      </Helmet>
+      <Metas
+        title={`Liste des jeux de ${pageContext.year}`}
+        description={`Liste des jeux Super Mario de l'année ${pageContext.year}`}
+      />
       <CenteredBlock
         title={`Liste des jeux de ${pageContext.year}`}
         titleComponent="h1"

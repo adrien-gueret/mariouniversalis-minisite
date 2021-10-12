@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
-import { Helmet } from 'react-helmet';
 import { graphql, Link } from 'gatsby';
 import styled from 'styled-components';
 
+import Metas from '../modules/app/components/Metas';
 import MainLayout from '../modules/layouts/MainLayout';
 import RegionContext from '../modules/regions/context';
 import SLUGS from '../modules/regions/regionSlugs';
@@ -22,10 +22,10 @@ export default function SelectYear({ data }) {
 
   return (
     <MainLayout>
-      <Helmet>
-        <title>Sélectionnez une année - Mario Universalis</title>
-        <meta name="description" content="Découvrez les jeux Mario sortis années après années" />
-      </Helmet>
+      <Metas
+        title="Sélectionnez une année"
+        description="Découvrez les jeux Mario sortis année après année"
+      />
       <CenteredBlock
         title="Sélectionnez une année"
         titleComponent="h1"

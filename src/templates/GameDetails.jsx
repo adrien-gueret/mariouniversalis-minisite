@@ -216,7 +216,6 @@ export default function GameDetails({ data }) {
     jsonld.gameTip = game.manualUrl;
   }
 
-  const title = `${game.name} - Mario Universalis`;
   let shouldRenderConfetti = false;
 
   const isGlobalRelease = game.releaseDate.eur === game.releaseDate.usa && game.releaseDate.usa === game.releaseDate.jap;
@@ -270,7 +269,7 @@ export default function GameDetails({ data }) {
   return (
     <MainLayout>
       <Metas
-        title={title}
+        title={game.name}
         description={game.description}
         url={`https://www.mariouniversalis.fr/minisite/${game.slug}`}
         image={game.image}

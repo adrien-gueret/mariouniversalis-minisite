@@ -1,8 +1,8 @@
 import React from 'react';
-import { Helmet } from 'react-helmet';
 import { Link } from 'gatsby';
 import styled, { keyframes } from 'styled-components';
 
+import Metas from '../modules/app/components/Metas';
 import HomenLayout from '../modules/layouts/HomeLayout';
 import { Block, Button } from '../modules/ui';
 
@@ -38,10 +38,7 @@ export default function Home() {
   
   return (
     <HomenLayout>
-      <Helmet>
-        <title>{ `Mini-site des jeux Super Mario - Mario Universalis` }</title>
-        <meta name="description" content="Découvrez une liste presque complète des jeux Super Mario sortis en Europe avec, pour chacun de ces jeux, sa boite, une description et d'autres informations comme le manuel d'utilisation !" />
-      </Helmet>
+      <Metas />
       <CenteredBlock
         title={<>Liste des jeux <Hidden>Super Mario</Hidden><SuperMario src={superMarioLogo} alt="" /></>}
         titleComponent="h1"
