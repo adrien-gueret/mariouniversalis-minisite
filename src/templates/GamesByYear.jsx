@@ -145,12 +145,15 @@ export default function GamesByYear({ data, pageContext, ...otherProps }) {
   useEffect(() => {
     localStorage.setItem('year', pageContext.year);
   }, [pageContext.year]);
+
+  const title = isYearOfLuigi ? `Liste des jeux de ${pageContext.year}, l'année de Luigi !` : `Liste des jeux de ${pageContext.year}`;
+  const description = isYearOfLuigi ? `Liste des jeux de Super Mario sortis en ${pageContext.year}, l'année de Luigi !` : `Liste des jeux Super Mario sortis durant l'année ${pageContext.year}.`;
   
   return (
     <MainLayout isYearOfLuigi={isYearOfLuigi}>
       <Metas
-        title={`Liste des jeux de ${pageContext.year}`}
-        description={`Liste des jeux Super Mario de l'année ${pageContext.year}`}
+        title={title}
+        description={description}
       />
       <CenteredBlock
         title={`Liste des jeux de ${pageContext.year}`}
