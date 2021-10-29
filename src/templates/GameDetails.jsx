@@ -234,6 +234,7 @@ export default function GameDetails({ data }) {
     if (isReleased) {
       if (ageInYears === 0) {
         ageLabel = ` (${['Aujourd\'hui !', 'Hier', 'Avant-hier'][ageInDays] || `il y a ${ageInDays} jours`})`;
+        shouldRenderConfetti = shouldRenderConfetti || ageInDays === 0;
       } else {
         const splittedReleaseDate = releaseDate.split('/');
         const anniversaryDay = +splittedReleaseDate[0];
