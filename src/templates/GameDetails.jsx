@@ -172,8 +172,9 @@ const Grid = styled.ul`
 `;
 
 export default function GameDetails({ data }) {
-  const [ isFirstRender, setIsFirstRender ]= useState(true);
-  
+  const [isFirstRender, setIsFirstRender] = useState(true);
+  const [playingVideoId, setPlayingVideoId] = useState(null);
+
   useEffect(() => {
     setIsFirstRender(false);
   }, [setIsFirstRender]);
@@ -361,10 +362,13 @@ export default function GameDetails({ data }) {
                 <li key={id}>
                   <VideoCard
                     title={title}
+                    thumbnailUrl={thumbnail.url}
                     thumbnailWidth={thumbnail.width}
                     thumbnailHeight={thumbnail.height}
                     channel={channel.title}
                     videoId={id}
+                    isPlaying={playingVideoId === id}
+                    onPlay={() => setPlayingVideoId(id)}
                   />
                 </li>
               )) }

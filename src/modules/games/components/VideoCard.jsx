@@ -48,26 +48,48 @@ const YouTubeIframe = styled.iframe`
     }
 `;
 
+const Thumbnail = styled.img`
+    width: 100%;
+
+    ${({ theme }) => theme.breakpoints.only('xs')} {
+        height: auto;
+    }
+`;
+
 export default function VideoCard({
     title,
+    thumbnailUrl,
     thumbnailWidth,
     thumbnailHeight,
     channel,
     videoId,
+    isPlaying,
+    onPlay,
     ...otherProps
 }) {
-    const embedUrl = `https://www.youtube.com/embed/${videoId}?modestbranding=1&rel=0&showinfo=0`;
+    const embedUrl = `https://www.youtube.com/embed/${videoId}?modestbranding=1&rel=0&showinfo=0&autoplay=1`;
     return (
         <Root {...otherProps}>
-            <YouTubeIframe
-                width={thumbnailWidth}
-                height={thumbnailHeight}
-                src={embedUrl}
-                title={title}
-                frameBorder="0"
-                allow="fullscreen"
-            />      
-
+            { isPlaying ? (
+                <YouTubeIframe
+                    width={thumbnailWidth}
+                    height={thumbnailHeight}
+                    src={embedUrl}
+                    title={title}
+                    frameBorder="0"
+                    autoplay="1"
+                    allow="autoplay; fullscreen"
+                />    
+            ) : (
+                <Thumbnail
+                    width={thumbnailWidth}
+                    height={thumbnailHeight}
+                    src={thumbnailUrl}
+                    title={title}
+                    onClick={onPlay}
+                />
+            )}
+  
             <Content>
                 <Header>
                     <Title>{ title }</Title>
