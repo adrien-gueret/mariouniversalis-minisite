@@ -249,13 +249,19 @@ export default function GameDetails({ data }) {
         ageLabel = ` (${ageInYears} an${ageInYears > 1 ? 's': ''}${isAnniversaryToday ? ' - Anniversaire aujour\'hui ! 🎉' : ''})`;
       }
     } else {
+      const gameReleaseYear = Number(game.releaseYear[region]);
+      const currentYear = new Date().getFullYear();
+      const hasReleaseThisYear = gameReleaseYear === currentYear;
+
       const daysBeforeAnniversary = game.daysBeforeAnniversary[region];
       const isPlanned = daysBeforeAnniversary !== null;
       const isBlurryDate = releaseDate.indexOf('?') >= 0;
 
+      const willBeReleasedThisYearButDontKnowWhen = hasReleaseThisYear && isBlurryDate;
+
       const blurryLabel = isBlurryDate ? ' au moins' : '';
 
-      if (isPlanned) {
+      if (isPlanned && !willBeReleasedThisYearButDontKnowWhen) {
         ageLabel = ` (${['Aujourd\'hui !', 'Demain !', 'Après-demain !'][daysBeforeAnniversary] || `dans${blurryLabel} ${daysBeforeAnniversary} jour${daysBeforeAnniversary > 1 ? 's': ''}`})`;
       }
     }

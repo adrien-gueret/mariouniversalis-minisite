@@ -1,8 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import useBreakpoint from '../../ui/hooks/useBreakpoint';
-
 const Root = styled.div`
     display: flex;
     flex-direction: column;
@@ -106,7 +104,6 @@ export default function VideoCard({
     ...otherProps
 }) {
     const embedUrl = `https://www.youtube.com/embed/${videoId}?modestbranding=1&rel=0&showinfo=0&autoplay=1`;
-    const shouldRenderVideoWithSmallHeight = useBreakpoint('xs');
     
     return (
         <Root {...otherProps}>
