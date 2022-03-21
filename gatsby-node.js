@@ -1,5 +1,7 @@
 const path = require(`path`);
 
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 const getGames = (() => {
     let games = [];
 
@@ -35,6 +37,8 @@ const getGames = (() => {
     
             hasNextPage = data.mu.games.pagination.has_next_page;
             games = games.concat(data.mu.games.data);
+
+            await sleep(300);
         } while (hasNextPage);
 
         return games;
@@ -88,5 +92,7 @@ exports.createPages = async ({ actions, graphql }) => {
             component: path.resolve(`./src/templates/GameDetails.jsx`),
             context: { id },
         });
+
+        await sleep(300);
     }));
 }
