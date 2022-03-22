@@ -1,22 +1,22 @@
-const path = require(`path`);
+const path = require(`path`)
 
-const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 const getGames = (() => {
-    let games = [];
+  let games = []
 
-    return async (graphql) => {
-        if (games.length) {
-            return games;
-        }
+  return async graphql => {
+    if (games.length) {
+      return games
+    }
 
-        let page = 0;
-        let hasNextPage = false;
+    let page = 0
+    let hasNextPage = false
 
-        do {
-            page++;
+    do {
+      page++
 
-            const { data } = await graphql(`
+      const { data } = await graphql(`
             query {
                 mu {
                     games(per_page: 30, page: ${page}) {
@@ -33,64 +33,66 @@ const getGames = (() => {
                         }
                     }  
                 }
-            }`);
-    
-            hasNextPage = data.mu.games.pagination.has_next_page;
-            games = games.concat(data.mu.games.data);
+            }`)
 
-            await sleep(300);
-        } while (hasNextPage);
+      hasNextPage = data.mu.games.pagination.has_next_page
+      games = games.concat(data.mu.games.data)
+      await sleep(3000)
+      console.log("Awaited ", Date.now())
+    } while (hasNextPage)
 
-        return games;
-    }
-})();
+    return games
+  }
+})()
 
 exports.createPages = async ({ actions, graphql }) => {
-    const { createPage } = actions;
+  const { createPage } = actions
 
-    const { data: siteData } = await graphql(`
+  const { data: siteData } = await graphql(`
     query {
-        site {
-            siteMetadata {
-                activeYears
-            }
+      site {
+        siteMetadata {
+          activeYears
         }
-    }`);
-
-    const { activeYears } = siteData.site.siteMetadata;
-    const [firstYearWithGames] = activeYears;
-    const lastYearWithGames = activeYears[activeYears.length - 1];
-
-    activeYears.forEach((year) => {
-        const page = {
-            component: path.resolve(`./src/templates/GamesByYear.jsx`),
-            context: {
-                year,
-                firstYearWithGames,
-                lastYearWithGames,
-            },
-        };
-
-        createPage({
-            path: `jeux-de-${year}`,
-            ...page,
-        });
-
-        ['europe', 'japon', 'etats-unis'].forEach((region) => {
-            createPage({
-                path: `jeux-de-${year}/${region}`,
-                ...page,
-            });
-        });
-    });
-
-    const games = await getGames(graphql);
-    
-    for (const game of games) {
-        createPage({
-            path: game.slug,
-            component: path.resolve('./src/templates/GameDetails.jsx'),
-            context: { id: game.id },
-        });
+      }
     }
+  `)
+
+  const { activeYears } = siteData.site.siteMetadata
+  const [firstYearWithGames] = activeYears
+  const lastYearWithGames = activeYears[activeYears.length - 1]
+
+  activeYears.forEach(year => {
+    const page = {
+      component: path.resolve(`./src/templates/GamesByYear.jsx`),
+      context: {
+        year,
+        firstYearWithGames,
+        lastYearWithGames,
+      },
+    }
+
+    createPage({
+      path: `jeux-de-${year}`,
+      ...page,
+    })
+    ;["europe", "japon", "etats-unis"].forEach(region => {
+      createPage({
+        path: `jeux-de-${year}/${region}`,
+        ...page,
+      })
+    })
+  })
+
+  const games = await getGames(graphql)
+
+  for (const game of games) {
+    createPage({
+      path: game.slug,
+      component: path.resolve(`./src/templates/GameDetails.jsx`),
+      context: { id: game.id },
+    })
+  }
+
+  console.log(`Page generated based on games: ${games.length}`)
 }
