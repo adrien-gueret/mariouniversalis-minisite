@@ -92,5 +92,7 @@ exports.createPages = async ({ actions, graphql }) => {
             component: path.resolve('./src/templates/GameDetails.jsx'),
             context: { id: game.id },
         });
+
+        await sleep(300);
     }
 }
