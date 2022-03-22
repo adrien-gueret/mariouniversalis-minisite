@@ -85,14 +85,12 @@ exports.createPages = async ({ actions, graphql }) => {
     });
 
     const games = await getGames(graphql);
-
-    Promise.all(games.map(async ({ id, slug }) => {
+    
+    for (const game of games) {
         createPage({
-            path: slug,
-            component: path.resolve(`./src/templates/GameDetails.jsx`),
-            context: { id },
+            path: game.slug,
+            component: path.resolve('./src/templates/GameDetails.jsx'),
+            context: { id: game.id },
         });
-
-        await sleep(300);
-    }));
+    }
 }
