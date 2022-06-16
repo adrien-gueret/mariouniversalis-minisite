@@ -186,6 +186,16 @@ export default function GameDetails({ data }) {
 
   const popularity = Math.round(game.popularity * 10) / 10;
 
+  const aggregateRating = game.totalRatings > 0 ? {
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: popularity,
+      worstRating: 0,
+      bestRating: 20,
+      ratingCount: game.totalRatings,
+    },
+  } : {};
+
   const jsonld = {
     '@context': 'https://schema.org',
     '@type': 'VideoGame',
@@ -195,22 +205,16 @@ export default function GameDetails({ data }) {
     url: `https://www.mariouniversalis.fr/${game.slug}`,
     genre: game.genres.map(({ name }) => name).join(' '),
     gamePlatform: [game.device.name],
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: popularity,
-      worstRating: 0,
-      bestRating: 20,
-      ratingCount: game.totalRatings,
-    },
     video: videos.data.map(({ id, title, thumbnail, channel, description, publishDate }) => ({
       '@type': 'VideoObject',
       name: title,
       author: channel,
       embedUrl: `https://www.youtube.com/embed/${id}`,
       thumbnailUrl: thumbnail.url,
-      description: description,
+      description: description || 'Cette vidéo n\'a pas de description',
       uploadDate: publishDate,
     })),
+    ...aggregateRating,
   };
 
   if (game.manualURL) {
