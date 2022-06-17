@@ -25,10 +25,42 @@ const getGames = (() => {
                         }
                         data {
                             id
-                            slug(withId: true)
                             name
+                            slug(withId: true)
+                            description: description_fr
+                            image
+                            genres {
+                            name(lang: fr)
+                            }
+                            imagePreview: image(hq: false)
+                            releaseDate: release_date(region: all, format: "DD/MM/YYYY")
+                            releaseYear: release_date(region: all, format: "YYYY")
+                            isReleased: is_released(region: all)
+                            daysBeforeAnniversary: days_before_anniversary
+                            age(region: all)
+                            ageInDays: age(unit: days, region: all)
+                            manualURL
+                            popularity
+                            totalRatings: total_ratings
+                            videos {
+                            data {
+                                id
+                                title
+                                description
+                                publishDate: publish_date
+                                channel {
+                                title
+                                }
+                                thumbnail {
+                                width
+                                height
+                                url
+                                }
+                            }
+                            }
                             device {
-                                name
+                            name
+                            logo
                             }
                         }
                     }  
@@ -90,7 +122,7 @@ exports.createPages = async ({ actions, graphql }) => {
         createPage({
             path: game.slug,
             component: path.resolve('./src/templates/GameDetails.jsx'),
-            context: { id: game.id },
+            context: { game },
         });
 
         await sleep(300);

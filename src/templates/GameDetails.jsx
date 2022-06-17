@@ -171,7 +171,7 @@ const Grid = styled.ul`
   }
 `;
 
-export default function GameDetails({ data }) {
+export default function GameDetails({ pageContext }) {
   const [isFirstRender, setIsFirstRender] = useState(true);
   const [playingVideoId, setPlayingVideoId] = useState(null);
 
@@ -181,7 +181,7 @@ export default function GameDetails({ data }) {
 
   const { region: currentRegion } = useContext(RegionContext);
   
-  const { game } = data.mu;
+  const { game } = pageContext;
   const { videos } = game;
 
   const popularity = Math.round(game.popularity * 10) / 10;
@@ -402,50 +402,3 @@ export default function GameDetails({ data }) {
     </MainLayout>
   );
 }
-
-export const query = graphql`
-  query($id: ID!) {
-    mu {
-      game(id: $id) {
-        id
-        name
-        slug(withId: true)
-        description: description_fr
-        image
-        genres {
-          name(lang: fr)
-        }
-        imagePreview: image(hq: false)
-        releaseDate: release_date(region: all, format: "DD/MM/YYYY")
-        releaseYear: release_date(region: all, format: "YYYY")
-        isReleased: is_released(region: all)
-        daysBeforeAnniversary: days_before_anniversary
-        age(region: all)
-        ageInDays: age(unit: days, region: all)
-        manualURL
-        popularity
-        totalRatings: total_ratings
-        videos {
-          data {
-            id
-            title
-            description
-            publishDate: publish_date
-            channel {
-              title
-            }
-            thumbnail {
-              width
-              height
-              url
-            }
-          }
-        }
-        device {
-          name
-          logo
-        }
-      }
-    }
-  }
-`;
