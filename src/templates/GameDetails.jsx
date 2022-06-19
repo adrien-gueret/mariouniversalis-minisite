@@ -396,7 +396,12 @@ export default function GameDetails({ pageContext }) {
           )}
         </Footer>
 
-        <script type="application/ld+json">{JSON.stringify(jsonld)}</script>
+        <script
+          type="application/ld+json" 
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(jsonld),
+          }}
+        />
 
       </CenteredBlock>
     </MainLayout>
