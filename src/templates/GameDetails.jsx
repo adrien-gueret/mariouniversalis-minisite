@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { graphql, Link } from 'gatsby';
+import { Link } from 'gatsby';
 import styled from 'styled-components';
 
 import Metas from '../modules/app/components/Metas';

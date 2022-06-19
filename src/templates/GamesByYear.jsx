@@ -1,5 +1,5 @@
 import React, { useEffect, useContext } from 'react';
-import { graphql, Link } from 'gatsby';
+import { Link } from 'gatsby';
 import styled, { ThemeContext, keyframes } from 'styled-components';
 
 import Metas from '../modules/app/components/Metas';
@@ -112,25 +112,24 @@ const SelectYearButton = styled(Button)`
   }
 `;
 
-export default function GamesByYear({ data, pageContext, ...otherProps }) {
+export default function GamesByYear({ pageContext }) {
   const { setTheme } = useContext(ThemeContext);
   const { region } = useContext(RegionContext);
 
+  const { isFirstYear, isLastYear, year, yearData } = pageContext;
+
   const currentYear = new Date().getFullYear();
-  const isCurrentYear = pageContext.year === currentYear;
-  const isFutureYear = pageContext.year > currentYear;
-  const isYearOfLuigi = pageContext.year === YEAR_OF_LUIGI;
+  const isCurrentYear = year === currentYear;
+  const isFutureYear = year > currentYear;
+  const isYearOfLuigi = year === YEAR_OF_LUIGI;
   
-  const allGames = data.mu[`allGames_${region}`].data;
+  const allGames = yearData[`allGames_${region}`].data;
   const totalGames = allGames.length;
 
-  const unreleasedGameIds = data.mu[`unreleasedGames_${region}`].data.map(({ id }) => id);
+  const unreleasedGameIds = yearData[`unreleasedGames_${region}`].data.map(({ id }) => id);
   const totalUnreleasedGames = unreleasedGameIds.length;
 
   const totalReleasedGames = totalGames - totalUnreleasedGames;
-
-  const isFirstYear = pageContext.year <= pageContext.firstYearWithGames;
-  const isLastYear = pageContext.year >= pageContext.lastYearWithGames;
 
   useEffect(() => {
     if (isYearOfLuigi) {
@@ -143,11 +142,11 @@ export default function GamesByYear({ data, pageContext, ...otherProps }) {
   }, [isYearOfLuigi, setTheme]);
 
   useEffect(() => {
-    localStorage.setItem('year', pageContext.year);
-  }, [pageContext.year]);
+    localStorage.setItem('year', year);
+  }, [year]);
 
-  const title = isYearOfLuigi ? `Liste des jeux de ${pageContext.year}, l'année de Luigi !` : `Liste des jeux de ${pageContext.year}`;
-  const description = isYearOfLuigi ? `Liste des jeux de Super Mario sortis en ${pageContext.year}, l'année de Luigi !` : `Liste des jeux Super Mario sortis durant l'année ${pageContext.year}.`;
+  const title = isYearOfLuigi ? `Liste des jeux de ${year}, l'année de Luigi !` : `Liste des jeux de ${year}`;
+  const description = isYearOfLuigi ? `Liste des jeux de Super Mario sortis en ${year}, l'année de Luigi !` : `Liste des jeux Super Mario sortis durant l'année ${year}.`;
   
   return (
     <MainLayout isYearOfLuigi={isYearOfLuigi}>
@@ -156,7 +155,7 @@ export default function GamesByYear({ data, pageContext, ...otherProps }) {
         description={description}
       />
       <CenteredBlock
-        title={`Liste des jeux de ${pageContext.year}`}
+        title={`Liste des jeux de ${year}`}
         titleComponent="h1"
       >
         { totalGames > 0 ? (
@@ -167,15 +166,15 @@ export default function GamesByYear({ data, pageContext, ...otherProps }) {
                   <>
                     <strong>{ totalReleasedGames }</strong>
                     { ' jeux sont sortis ' }
-                    <RegionSwitcher year={pageContext.year} />
-                    {isCurrentYear ? ' cette année' : ` en ${pageContext.year}`}.
+                    <RegionSwitcher year={year} />
+                    {isCurrentYear ? ' cette année' : ` en ${year}`}.
                   </>
                 ) : (
                   <>
                     <strong>Un seul</strong>
                     { ' jeu est sorti' }
-                    <RegionSwitcher year={pageContext.year} />
-                    {isCurrentYear ? ' cette année' : ` en ${pageContext.year}`}.</>
+                    <RegionSwitcher year={year} />
+                    {isCurrentYear ? ' cette année' : ` en ${year}`}.</>
                 )}
               </div>
             )}
@@ -220,7 +219,7 @@ export default function GamesByYear({ data, pageContext, ...otherProps }) {
                       } else {
                         releaseDateContent = Object
                           .keys(releaseYear)
-                          .filter((region) => +releaseYear[region] === pageContext.year)
+                          .filter((region) => +releaseYear[region] === year)
                           .map((region) => (
                               <Flag
                                   key={region}
@@ -257,7 +256,7 @@ export default function GamesByYear({ data, pageContext, ...otherProps }) {
           <>
             <p>
               Aucun jeu Mario n'est sorti
-              <RegionSwitcher year={pageContext.year} />
+              <RegionSwitcher year={year} />
               {(isCurrentYear || isFutureYear) && ' pour le moment' }
               cette année-là...
             </p>
@@ -269,10 +268,10 @@ export default function GamesByYear({ data, pageContext, ...otherProps }) {
             style={{ visibility: isFirstYear ? 'hidden' : 'visible' }}
             $primary
             as={isFirstYear ? 'span' : Link}
-            to={isFirstYear ? void 0 : `/jeux-de-${pageContext.year - 1}${REGION_SLUGS[region]}`}
+            to={isFirstYear ? void 0 : `/jeux-de-${year - 1}${REGION_SLUGS[region]}`}
           >
             <ChevronLeft />
-            <span><YearLabel>Année </YearLabel>{pageContext.year - 1}</span>
+            <span><YearLabel>Année </YearLabel>{year - 1}</span>
           </PrevYearButton>
 
           <SelectYearButton as={Link} to="/selectionner-annee">
@@ -284,9 +283,9 @@ export default function GamesByYear({ data, pageContext, ...otherProps }) {
               style={{ visibility: isLastYear ? 'hidden' : 'visible' }}
               $primary
               as={isLastYear ? 'span' : Link}
-              to={isLastYear ? void 0 : `/jeux-de-${pageContext.year + 1}${REGION_SLUGS[region]}`}
+              to={isLastYear ? void 0 : `/jeux-de-${year + 1}${REGION_SLUGS[region]}`}
             >
-              <span><YearLabel>Année </YearLabel>{pageContext.year + 1}</span>
+              <span><YearLabel>Année </YearLabel>{year + 1}</span>
               <ChevronRight />
             </NextYearButton>
          
@@ -296,81 +295,3 @@ export default function GamesByYear({ data, pageContext, ...otherProps }) {
     </MainLayout>
   );
 }
-
-export const query = graphql`
-  fragment GameFragment on MU_Game {
-    id
-    slug(withId: true)
-    name
-    image
-    imagePreview: image(hq: false)
-    device {
-      name
-      logo
-    }
-  }  
-
-  query($year: Int!) {
-    mu {
-      allGames_eur: games(release_year: { eur: $year }, per_page: 20, order_by: { field: release_date_eur }) {
-        data {
-          ...GameFragment
-          releaseDate: release_date(region: eur, format: "DD/MM/YYYY")
-        }
-      }
-
-      unreleasedGames_eur: games(release_year: { eur: $year }, has_been_released: { eur: false }) {
-        data {
-          id
-        }
-      }
-
-      allGames_usa: games(release_year: { usa: $year }, per_page: 20, order_by: { field: release_date_usa }) {
-        data {
-          ...GameFragment
-          releaseDate: release_date(region: usa, format: "DD/MM/YYYY")
-        }
-      }
-
-      unreleasedGames_usa: games(release_year: { usa: $year }, has_been_released: { usa: false }) {
-        data {
-          id
-        }
-      }
-
-      allGames_jap: games(release_year: { jap: $year }, per_page: 20, order_by: { field: release_date_jap }) {
-        data {
-          ...GameFragment
-          releaseDate: release_date(region: jap, format: "DD/MM/YYYY")
-        }
-      }
-
-      unreleasedGames_jap: games(release_year: { jap: $year }, has_been_released: { jap: false }) {
-        data {
-          id
-        }
-      }
-
-      allGames_all: games(
-        release_year: { eur: $year, jap: $year, usa: $year, operator: OR },
-        per_page: 20,
-        order_by: { field: release_date_eur, then: { field: release_date_usa, then: { field: release_date_jap } } }
-      ) {
-        data {
-         ...GameFragment
-         releaseDate: release_date(region: all, format: "DD/MM/YYYY")
-         releaseYear: release_date(region: all, format: "YYYY")
-        }
-      }
-
-      unreleasedGames_all: games(
-        release_year: { eur: $year, jap: $year, usa: $year, operator: OR },
-        has_been_released: { eur: false, jap: false, usa: false, operator: AND }
-      ) {
-        data {
-          id
-        }
-      }
-    }
-  }
-`;
