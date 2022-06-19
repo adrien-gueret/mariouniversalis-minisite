@@ -204,8 +204,6 @@ exports.createPages = async ({ actions, graphql }) => {
             },
         };
 
-        console.log(page);
-
         createPage({
             path: `jeux-de-${year}`,
             ...page,
