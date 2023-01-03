@@ -255,10 +255,9 @@ export default function GamesByYear({ pageContext }) {
         ) : (
           <>
             <p>
-              Aucun jeu Mario n'est sorti
+              Aucun jeu Mario n'est {(isCurrentYear || isFutureYear) ? ' prévu pour le moment ' : ' sorti '}
               <RegionSwitcher year={year} />
-              {(isCurrentYear || isFutureYear) && ' pour le moment' }
-              cette année-là...
+              en {year}.
             </p>
           </>
         )}
