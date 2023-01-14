@@ -30,9 +30,12 @@ const HeaderLink = styled(Link)`
   padding: ${({ theme }) => theme.spacing(1, 0)};
   position: relative;
 
-  margin-left: auto;
   margin-right: ${({ theme }) => theme.spacing(4)};
   white-space: nowrap;
+
+  &.first {
+    margin-left: auto;
+  }
 
   &::after {
     content: "";
@@ -82,6 +85,9 @@ function MainLayout({ children }) {
         <Link to="/" title="Retour à l'accueil" aria-label="Retour à l'accueil">
           <Logo src={logo} alt="Mario Universalis" />
         </Link>
+        <HeaderLink className="first" to="/approximarios">
+          ApproxiMarios
+        </HeaderLink>
         <HeaderLink to="/a-propos">À propos</HeaderLink>
         <TwitterLink
           href="https://twitter.com/MarioUnivRsalis"
