@@ -1,15 +1,15 @@
-import React from 'react';
-import styled, { keyframes } from 'styled-components';
+import React from "react";
+import styled, { keyframes } from "styled-components";
 
 const ConfettiContenainer = styled.div`
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    top: 0;
-    pointer-events: none;
-    z-index: 100;
-    overflow: hidden;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  pointer-events: none;
+  z-index: 100;
+  overflow: hidden;
 `;
 
 const confettiAnimation = keyframes`
@@ -21,33 +21,42 @@ const confettiAnimation = keyframes`
 `;
 
 const Confetti = styled.div`
-    pointer-events: none;
-    width: 15px;
-    height: 15px;
-    background-color: #f2d74e;
-    position: absolute;
-    animation: 5s ${confettiAnimation} ease-in-out -2s 3;
-    animation-fill-mode: forwards;
-    transform-origin: left top;
-    opacity: .8;
+  pointer-events: none;
+  width: 15px;
+  height: 15px;
+  background-color: #f2d74e;
+  position: absolute;
+  animation: 5s ${confettiAnimation} ease-in-out -2s 3;
+  animation-fill-mode: forwards;
+  transform-origin: left top;
+  opacity: 0.8;
 `;
 
-const colors = ['pink', 'purple', 'blue', 'aqua', 'green', 'yellow', 'orange', 'red'];
+const colors = [
+  "pink",
+  "purple",
+  "blue",
+  "aqua",
+  "green",
+  "yellow",
+  "orange",
+  "red",
+];
 const totalColors = colors.length;
 
 export default function ConfettiLuncher() {
-    return (
-        <ConfettiContenainer aria-hidden>
-            { new Array(100).fill(null).map((_,i) => (
-                <Confetti
-                    key={i}
-                    style={{
-                        left: `${Math.floor(Math.random() * 100) + 1}%`,
-                        animationDelay: `${-Math.random() * 10}s`,
-                        backgroundColor: colors[i % totalColors],
-                    }}
-                />
-            )) }
-        </ConfettiContenainer>
-    );
+  return (
+    <ConfettiContenainer aria-hidden>
+      {new Array(100).fill(null).map((_, i) => (
+        <Confetti
+          key={i}
+          style={{
+            left: `${Math.floor(Math.random() * 100) + 1}%`,
+            animationDelay: `${-Math.random() * 10}s`,
+            backgroundColor: colors[i % totalColors],
+          }}
+        />
+      ))}
+    </ConfettiContenainer>
+  );
 }

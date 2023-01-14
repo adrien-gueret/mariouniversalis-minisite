@@ -1,9 +1,9 @@
-import pageBackground from '../images/characters-black.png';
-import gamesBackground from '../images/games.png';
+import pageBackground from "../images/characters-black.png";
+import gamesBackground from "../images/games.png";
 
 const images = {
-    pageBackground,
-    gamesBackground,
+  pageBackground,
+  gamesBackground,
 };
 
 export default images;

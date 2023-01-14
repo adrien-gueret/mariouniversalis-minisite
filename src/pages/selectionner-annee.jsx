@@ -1,12 +1,12 @@
-import React, { useContext } from 'react';
-import { graphql, Link } from 'gatsby';
-import styled from 'styled-components';
+import React, { useContext } from "react";
+import { graphql, Link } from "gatsby";
+import styled from "styled-components";
 
-import Metas from '../modules/app/components/Metas';
-import MainLayout from '../modules/layouts/MainLayout';
-import RegionContext from '../modules/regions/context';
-import SLUGS from '../modules/regions/regionSlugs';
-import { Block, Button } from '../modules/ui';
+import Metas from "../modules/app/components/Metas";
+import MainLayout from "../modules/layouts/MainLayout";
+import RegionContext from "../modules/regions/context";
+import SLUGS from "../modules/regions/regionSlugs";
+import { Block, Button } from "../modules/ui";
 
 const CenteredBlock = styled(Block)`
   margin: auto;
@@ -26,13 +26,16 @@ export default function SelectYear({ data }) {
         title="Sélectionnez une année"
         description="Découvrez les jeux Mario sortis année après année"
       />
-      <CenteredBlock
-        title="Sélectionnez une année"
-        titleComponent="h1"
-      >
-        { activeYears.map(year => (
-          <YearButton key={year} as={Link} to={`/jeux-de-${year}${SLUGS[region]}`}>{ year }</YearButton>
-        )) }
+      <CenteredBlock title="Sélectionnez une année" titleComponent="h1">
+        {activeYears.map(year => (
+          <YearButton
+            key={year}
+            as={Link}
+            to={`/jeux-de-${year}${SLUGS[region]}`}
+          >
+            {year}
+          </YearButton>
+        ))}
       </CenteredBlock>
     </MainLayout>
   );

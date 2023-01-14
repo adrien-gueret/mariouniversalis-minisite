@@ -1,48 +1,48 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from "react";
 
 export default function useImage(src) {
-    const [isComplete, setIsComplete] = useState(false);
-    const [hasFailed, setHasFailed] = useState(false);
+  const [isComplete, setIsComplete] = useState(false);
+  const [hasFailed, setHasFailed] = useState(false);
 
-    const isSSR = typeof Image === 'undefined';
+  const isSSR = typeof Image === "undefined";
 
-    const image = useMemo(() => {
-        if (isSSR) {
-            return null;
-        }
+  const image = useMemo(() => {
+    if (isSSR) {
+      return null;
+    }
 
-        const image = new Image();
-        image.src = src;
+    const image = new Image();
+    image.src = src;
 
-        return image;
-    }, [src, isSSR]);
+    return image;
+  }, [src, isSSR]);
 
-    useEffect(() => {
-        if (!image) {
-            return;
-        }
-        
-        const complete = () => setIsComplete(true);
+  useEffect(() => {
+    if (!image) {
+      return;
+    }
 
-        if (image.complete) {
-            complete();
-            return;
-        }
+    const complete = () => setIsComplete(true);
 
-        image.onload = complete;
-        image.onerror = () => setHasFailed(true);
+    if (image.complete) {
+      complete();
+      return;
+    }
 
-        return () => {
-            image.onload = null;
-            image.onerror = null;
-        };
-    }, [image]);
+    image.onload = complete;
+    image.onerror = () => setHasFailed(true);
 
-    return {
-        src,
-        isComplete,
-        hasFailed,
-        isLoading: !isComplete && !hasFailed,
-        nativeImage: image,
+    return () => {
+      image.onload = null;
+      image.onerror = null;
     };
+  }, [image]);
+
+  return {
+    src,
+    isComplete,
+    hasFailed,
+    isLoading: !isComplete && !hasFailed,
+    nativeImage: image,
+  };
 }

@@ -1,26 +1,28 @@
-import React, { useEffect, useContext } from 'react';
-import { Link } from 'gatsby';
-import styled, { ThemeContext, keyframes } from 'styled-components';
+import React, { useEffect, useContext } from "react";
+import { Link } from "gatsby";
+import styled, { ThemeContext, keyframes } from "styled-components";
 
-import Metas from '../modules/app/components/Metas';
-import { GameCard, YEAR_OF_LUIGI } from '../modules/games';
-import MainLayout from '../modules/layouts/MainLayout';
-import RegionContext from '../modules/regions/context';
-import FLAGS from '../modules/regions/flags';
-import REGION_LABELS from '../modules/regions/regionLabels';
-import REGION_SLUGS from '../modules/regions/regionSlugs';
-import RegionSwitcher from '../modules/regions/RegionSwitcher';
-import { Block, Button } from '../modules/ui';
+import Metas from "../modules/app/components/Metas";
+import { GameCard, YEAR_OF_LUIGI } from "../modules/games";
+import MainLayout from "../modules/layouts/MainLayout";
+import RegionContext from "../modules/regions/context";
+import FLAGS from "../modules/regions/flags";
+import REGION_LABELS from "../modules/regions/regionLabels";
+import REGION_SLUGS from "../modules/regions/regionSlugs";
+import RegionSwitcher from "../modules/regions/RegionSwitcher";
+import { Block, Button } from "../modules/ui";
 
-import luigiTheme from '../modules/theme/themes/luigi';
+import luigiTheme from "../modules/theme/themes/luigi";
 
-import ChevronLeft from '../modules/icons/ChevronLeft';
-import ChevronRight from '../modules/icons/ChevronRight';
+import ChevronLeft from "../modules/icons/ChevronLeft";
+import ChevronRight from "../modules/icons/ChevronRight";
 
 const CenteredBlock = styled(Block)`
   margin: auto;
 
-  ${({ theme }) => theme.images.gamesByYearDecoration ? `
+  ${({ theme }) =>
+    theme.images.gamesByYearDecoration
+      ? `
     h1::after {
       content: '';
       margin-left: ${theme.spacing(1)};
@@ -33,7 +35,8 @@ const CenteredBlock = styled(Block)`
       background-position: center;
       background-size: contain;
     }
-  ` : ''}
+  `
+      : ""}
 `;
 
 const Grid = styled.div`
@@ -42,11 +45,11 @@ const Grid = styled.div`
   grid-gap: ${({ theme }) => theme.spacing(3)};
   margin: ${({ theme }) => theme.spacing(6, 0)};
 
-  ${({ theme }) => theme.breakpoints.up('md')} {
+  ${({ theme }) => theme.breakpoints.up("md")} {
     grid-template-columns: repeat(2, 1fr);
   }
-  
-  ${({ theme }) => theme.breakpoints.up('lg')} {
+
+  ${({ theme }) => theme.breakpoints.up("lg")} {
     grid-template-columns: repeat(4, 1fr);
   }
 `;
@@ -78,11 +81,11 @@ const Flag = styled.img`
 const YearNavigation = styled.nav`
   display: flex;
   justify-content: space-between;
-  margin-top:  ${({ theme }) => theme.spacing(4)};
+  margin-top: ${({ theme }) => theme.spacing(4)};
   margin-bottom: 60px;
   position: relative;
 
-  ${({ theme }) => theme.breakpoints.up('sm')} {
+  ${({ theme }) => theme.breakpoints.up("sm")} {
     margin-bottom: 0;
   }
 `;
@@ -90,21 +93,25 @@ const YearNavigation = styled.nav`
 const YearLabel = styled.span`
   display: none;
 
-  ${({ theme }) => theme.breakpoints.up('sm')} {
+  ${({ theme }) => theme.breakpoints.up("sm")} {
     display: inline;
   }
 `;
 
-const PrevYearButton = styled(Button)`margin-right: auto;`;
-const NextYearButton = styled(Button)`margin-left: auto;`;
+const PrevYearButton = styled(Button)`
+  margin-right: auto;
+`;
+const NextYearButton = styled(Button)`
+  margin-left: auto;
+`;
 const SelectYearButton = styled(Button)`
   margin: auto;
   position: absolute;
   top: 60px;
-  left:  ${({ theme }) => theme.spacing(8)};
-  right:  ${({ theme }) => theme.spacing(8)};
+  left: ${({ theme }) => theme.spacing(8)};
+  right: ${({ theme }) => theme.spacing(8)};
 
-  ${({ theme }) => theme.breakpoints.up('sm')} {
+  ${({ theme }) => theme.breakpoints.up("sm")} {
     position: relative;
     top: 0;
     left: 0;
@@ -122,11 +129,13 @@ export default function GamesByYear({ pageContext }) {
   const isCurrentYear = year === currentYear;
   const isFutureYear = year > currentYear;
   const isYearOfLuigi = year === YEAR_OF_LUIGI;
-  
+
   const allGames = yearData[`allGames_${region}`].data;
   const totalGames = allGames.length;
 
-  const unreleasedGameIds = yearData[`unreleasedGames_${region}`].data.map(({ id }) => id);
+  const unreleasedGameIds = yearData[`unreleasedGames_${region}`].data.map(
+    ({ id }) => id
+  );
   const totalUnreleasedGames = unreleasedGameIds.length;
 
   const totalReleasedGames = totalGames - totalUnreleasedGames;
@@ -142,120 +151,127 @@ export default function GamesByYear({ pageContext }) {
   }, [isYearOfLuigi, setTheme]);
 
   useEffect(() => {
-    localStorage.setItem('year', year);
+    localStorage.setItem("year", year);
   }, [year]);
 
-  const title = isYearOfLuigi ? `Liste des jeux de ${year}, l'année de Luigi !` : `Liste des jeux de ${year}`;
-  const description = isYearOfLuigi ? `Liste des jeux de Super Mario sortis en ${year}, l'année de Luigi !` : `Liste des jeux Super Mario sortis durant l'année ${year}.`;
-  
+  const title = isYearOfLuigi
+    ? `Liste des jeux de ${year}, l'année de Luigi !`
+    : `Liste des jeux de ${year}`;
+  const description = isYearOfLuigi
+    ? `Liste des jeux de Super Mario sortis en ${year}, l'année de Luigi !`
+    : `Liste des jeux Super Mario sortis durant l'année ${year}.`;
+
   return (
     <MainLayout isYearOfLuigi={isYearOfLuigi}>
-      <Metas
-        title={title}
-        description={description}
-      />
-      <CenteredBlock
-        title={`Liste des jeux de ${year}`}
-        titleComponent="h1"
-      >
-        { totalGames > 0 ? (
+      <Metas title={title} description={description} />
+      <CenteredBlock title={`Liste des jeux de ${year}`} titleComponent="h1">
+        {totalGames > 0 ? (
           <>
-            { Boolean(totalReleasedGames) && (
+            {Boolean(totalReleasedGames) && (
               <div>
-                { totalReleasedGames > 1 ? (
+                {totalReleasedGames > 1 ? (
                   <>
-                    <strong>{ totalReleasedGames }</strong>
-                    { ' jeux sont sortis ' }
+                    <strong>{totalReleasedGames}</strong>
+                    {" jeux sont sortis "}
                     <RegionSwitcher year={year} />
-                    {isCurrentYear ? ' cette année' : ` en ${year}`}.
+                    {isCurrentYear ? " cette année" : ` en ${year}`}.
                   </>
                 ) : (
                   <>
                     <strong>Un seul</strong>
-                    { ' jeu est sorti' }
+                    {" jeu est sorti"}
                     <RegionSwitcher year={year} />
-                    {isCurrentYear ? ' cette année' : ` en ${year}`}.</>
+                    {isCurrentYear ? " cette année" : ` en ${year}`}.
+                  </>
                 )}
               </div>
             )}
-            
-            { Boolean(totalUnreleasedGames) && (
+
+            {Boolean(totalUnreleasedGames) && (
               <p>
-                { totalUnreleasedGames > 1 ? (
-                  <>Il reste encore <strong>{ totalUnreleasedGames }</strong> jeux en attente de sortie !</>
+                {totalUnreleasedGames > 1 ? (
+                  <>
+                    Il reste encore <strong>{totalUnreleasedGames}</strong> jeux
+                    en attente de sortie !
+                  </>
                 ) : (
-                  <>Il reste encore <strong>un</strong> jeu en attente de sortie !</>
+                  <>
+                    Il reste encore <strong>un</strong> jeu en attente de sortie
+                    !
+                  </>
                 )}
               </p>
             )}
 
             <Grid>
-              { 
-                allGames.map((game, index) => {
-                  const { id, releaseDate, releaseYear } = game;
-                  const isReleased = !unreleasedGameIds.includes(id);
-                  let releaseDateContent = null;
+              {allGames.map((game, index) => {
+                const { id, releaseDate, releaseYear } = game;
+                const isReleased = !unreleasedGameIds.includes(id);
+                let releaseDateContent = null;
 
-                  if (Boolean(releaseDate)) {
-                    const isOnSpecificRegion = typeof releaseDate === 'string';
+                if (Boolean(releaseDate)) {
+                  const isOnSpecificRegion = typeof releaseDate === "string";
 
-                    if (isOnSpecificRegion) {
+                  if (isOnSpecificRegion) {
+                    releaseDateContent = (
+                      <ReleaseDate>
+                        {!isReleased && "Prévu le"} {releaseDate}
+                      </ReleaseDate>
+                    );
+                  } else {
+                    const isGlobalRelease =
+                      releaseDate.eur === releaseDate.usa &&
+                      releaseDate.usa === releaseDate.jap;
+
+                    if (isGlobalRelease) {
                       releaseDateContent = (
-                        <ReleaseDate>
-                            { !isReleased && 'Prévu le'} { releaseDate }
-                        </ReleaseDate>
+                        <Flag
+                          src={FLAGS.all}
+                          alt={`Sortie mondiale le ${releaseDate.eur}`}
+                          title={`Sortie mondiale le ${releaseDate.eur}`}
+                        />
                       );
                     } else {
-                      const isGlobalRelease = releaseDate.eur === releaseDate.usa && releaseDate.usa === releaseDate.jap;
-
-                      if (isGlobalRelease) {
-                        releaseDateContent = (
+                      releaseDateContent = Object.keys(releaseYear)
+                        .filter(region => +releaseYear[region] === year)
+                        .map(region => (
                           <Flag
-                              src={FLAGS.all}
-                              alt={`Sortie mondiale le ${releaseDate.eur}`}
-                              title={`Sortie mondiale le ${releaseDate.eur}`}
+                            key={region}
+                            src={FLAGS[region]}
+                            alt={`Sorti le ${releaseDate[region]} ${REGION_LABELS[region]}`}
+                            title={`Sorti le ${releaseDate[region]} ${REGION_LABELS[region]}`}
                           />
-                        );
-                      } else {
-                        releaseDateContent = Object
-                          .keys(releaseYear)
-                          .filter((region) => +releaseYear[region] === year)
-                          .map((region) => (
-                              <Flag
-                                  key={region}
-                                  src={FLAGS[region]}
-                                  alt={`Sorti le ${releaseDate[region]} ${REGION_LABELS[region]}`}
-                                  title={`Sorti le ${releaseDate[region]} ${REGION_LABELS[region]}`}
-                              />
                         ));
-                      }
                     }
                   }
+                }
 
-                  return (
-                    <GridGameItem
-                      key={game.id}
-                      name={game.name}
-                      image={game.image}
-                      slug={game.slug}
-                      imagePreview={game.imagePreview}
-                      deviceName={game.device.name}
-                      deviceLogo={game.device.logo}
-                      style={{
-                        animationDelay: `${index * 50}ms`,
-                      }}
-                    >
-                      { releaseDateContent }
-                    </GridGameItem>
-                  );
-                })
-              }
+                return (
+                  <GridGameItem
+                    key={game.id}
+                    name={game.name}
+                    image={game.image}
+                    slug={game.slug}
+                    imagePreview={game.imagePreview}
+                    deviceName={game.device.name}
+                    deviceLogo={game.device.logo}
+                    style={{
+                      animationDelay: `${index * 50}ms`,
+                    }}
+                  >
+                    {releaseDateContent}
+                  </GridGameItem>
+                );
+              })}
             </Grid>
           </>
         ) : (
           <>
             <p>
-              Aucun jeu Mario n'est {(isCurrentYear || isFutureYear) ? ' prévu pour le moment ' : ' sorti '}
+              Aucun jeu Mario n'est{" "}
+              {isCurrentYear || isFutureYear
+                ? " prévu pour le moment "
+                : " sorti "}
               <RegionSwitcher year={year} />
               en {year}.
             </p>
@@ -264,32 +280,43 @@ export default function GamesByYear({ pageContext }) {
 
         <YearNavigation>
           <PrevYearButton
-            style={{ visibility: isFirstYear ? 'hidden' : 'visible' }}
+            style={{ visibility: isFirstYear ? "hidden" : "visible" }}
             $primary
-            as={isFirstYear ? 'span' : Link}
-            to={isFirstYear ? void 0 : `/jeux-de-${year - 1}${REGION_SLUGS[region]}`}
+            as={isFirstYear ? "span" : Link}
+            to={
+              isFirstYear
+                ? void 0
+                : `/jeux-de-${year - 1}${REGION_SLUGS[region]}`
+            }
           >
             <ChevronLeft />
-            <span><YearLabel>Année </YearLabel>{year - 1}</span>
+            <span>
+              <YearLabel>Année </YearLabel>
+              {year - 1}
+            </span>
           </PrevYearButton>
 
           <SelectYearButton as={Link} to="/selectionner-annee">
             <span>Autre année</span>
           </SelectYearButton>
-          
-         
-            <NextYearButton
-              style={{ visibility: isLastYear ? 'hidden' : 'visible' }}
-              $primary
-              as={isLastYear ? 'span' : Link}
-              to={isLastYear ? void 0 : `/jeux-de-${year + 1}${REGION_SLUGS[region]}`}
-            >
-              <span><YearLabel>Année </YearLabel>{year + 1}</span>
-              <ChevronRight />
-            </NextYearButton>
-         
+
+          <NextYearButton
+            style={{ visibility: isLastYear ? "hidden" : "visible" }}
+            $primary
+            as={isLastYear ? "span" : Link}
+            to={
+              isLastYear
+                ? void 0
+                : `/jeux-de-${year + 1}${REGION_SLUGS[region]}`
+            }
+          >
+            <span>
+              <YearLabel>Année </YearLabel>
+              {year + 1}
+            </span>
+            <ChevronRight />
+          </NextYearButton>
         </YearNavigation>
-            
       </CenteredBlock>
     </MainLayout>
   );

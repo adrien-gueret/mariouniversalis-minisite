@@ -1,3 +1,3 @@
-import { createContext } from 'react';
+import { createContext } from "react";
 
-export default createContext({ region: 'all', setRegion() {}});
+export default createContext({ region: "all", setRegion() {} });

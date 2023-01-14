@@ -1,20 +1,20 @@
 const path = require(`path`);
 
 const getGames = (() => {
-    let games = [];
+  let games = [];
 
-    return async (graphql) => {
-        if (games.length) {
-            return games;
-        }
+  return async graphql => {
+    if (games.length) {
+      return games;
+    }
 
-        let page = 0;
-        let hasNextPage = false;
+    let page = 0;
+    let hasNextPage = false;
 
-        do {
-            page++;
+    do {
+      page++;
 
-            const { data } = await graphql(`
+      const { data } = await graphql(`
             query {
                 mu {
                     games(per_page: 30, page: ${page}) {
@@ -64,166 +64,241 @@ const getGames = (() => {
                     }  
                 }
             }`);
-    
-            hasNextPage = data.mu.games.pagination.has_next_page;
-            games = games.concat(data.mu.games.data);
-        } while (hasNextPage);
 
-        return games;
-    }
+      hasNextPage = data.mu.games.pagination.has_next_page;
+      games = games.concat(data.mu.games.data);
+    } while (hasNextPage);
+
+    return games;
+  };
 })();
 
 const getYearsData = (() => {
-    let yearData = null;
+  let yearData = null;
 
-    return async (activeYears, graphql) => {
-        if (yearData) {
-            return yearData;
-        }
+  return async (activeYears, graphql) => {
+    if (yearData) {
+      return yearData;
+    }
 
-        yearData = {};
+    yearData = {};
 
-        await Promise.all(activeYears.map(async (year) => {
-            const { data } = await graphql(`
+    await Promise.all(
+      activeYears.map(async year => {
+        const { data } = await graphql(
+          `
             fragment GameFragment on MU_Game {
-                id
-                slug(withId: true)
+              id
+              slug(withId: true)
+              name
+              image
+              imagePreview: image(hq: false)
+              device {
                 name
-                image
-                imagePreview: image(hq: false)
-                device {
-                    name
-                    logo
-                }
+                logo
+              }
             }
 
-            query($year: Int!) {
-                mu {
-                    allGames_eur: games(release_year: { eur: $year }, per_page: 30, order_by: { field: release_date_eur }) {
-                        data {
-                        ...GameFragment
-                        releaseDate: release_date(region: eur, format: "DD/MM/YYYY")
-                        }
-                    }
-
-                    unreleasedGames_eur: games(release_year: { eur: $year }, has_been_released: { eur: false }) {
-                        data {
-                        id
-                        }
-                    }
-
-                    allGames_usa: games(release_year: { usa: $year }, per_page: 30, order_by: { field: release_date_usa }) {
-                        data {
-                        ...GameFragment
-                        releaseDate: release_date(region: usa, format: "DD/MM/YYYY")
-                        }
-                    }
-
-                    unreleasedGames_usa: games(release_year: { usa: $year }, has_been_released: { usa: false }) {
-                        data {
-                        id
-                        }
-                    }
-
-                    allGames_jap: games(release_year: { jap: $year }, per_page: 30, order_by: { field: release_date_jap }) {
-                        data {
-                        ...GameFragment
-                        releaseDate: release_date(region: jap, format: "DD/MM/YYYY")
-                        }
-                    }
-
-                    unreleasedGames_jap: games(release_year: { jap: $year }, has_been_released: { jap: false }) {
-                        data {
-                        id
-                        }
-                    }
-
-                    allGames_all: games(
-                        release_year: { eur: $year, jap: $year, usa: $year, operator: OR },
-                        per_page: 30,
-                        order_by: { field: release_date_eur, then: { field: release_date_usa, then: { field: release_date_jap } } }
-                    ) {
-                        data {
-                        ...GameFragment
-                        releaseDate: release_date(region: all, format: "DD/MM/YYYY")
-                        releaseYear: release_date(region: all, format: "YYYY")
-                        }
-                    }
-
-                    unreleasedGames_all: games(
-                        release_year: { eur: $year, jap: $year, usa: $year, operator: OR },
-                        has_been_released: { eur: false, jap: false, usa: false, operator: AND }
-                    ) {
-                        data {
-                        id
-                        }
-                    }
+            query ($year: Int!) {
+              mu {
+                allGames_eur: games(
+                  release_year: { eur: $year }
+                  per_page: 30
+                  order_by: { field: release_date_eur }
+                ) {
+                  data {
+                    ...GameFragment
+                    releaseDate: release_date(region: eur, format: "DD/MM/YYYY")
+                  }
                 }
-            }`, { year });
 
-            yearData[year] = data.mu;
-        }));
+                unreleasedGames_eur: games(
+                  release_year: { eur: $year }
+                  has_been_released: { eur: false }
+                ) {
+                  data {
+                    id
+                  }
+                }
 
-        return yearData;
-    }
+                allGames_usa: games(
+                  release_year: { usa: $year }
+                  per_page: 30
+                  order_by: { field: release_date_usa }
+                ) {
+                  data {
+                    ...GameFragment
+                    releaseDate: release_date(region: usa, format: "DD/MM/YYYY")
+                  }
+                }
+
+                unreleasedGames_usa: games(
+                  release_year: { usa: $year }
+                  has_been_released: { usa: false }
+                ) {
+                  data {
+                    id
+                  }
+                }
+
+                allGames_jap: games(
+                  release_year: { jap: $year }
+                  per_page: 30
+                  order_by: { field: release_date_jap }
+                ) {
+                  data {
+                    ...GameFragment
+                    releaseDate: release_date(region: jap, format: "DD/MM/YYYY")
+                  }
+                }
+
+                unreleasedGames_jap: games(
+                  release_year: { jap: $year }
+                  has_been_released: { jap: false }
+                ) {
+                  data {
+                    id
+                  }
+                }
+
+                allGames_all: games(
+                  release_year: {
+                    eur: $year
+                    jap: $year
+                    usa: $year
+                    operator: OR
+                  }
+                  per_page: 30
+                  order_by: {
+                    field: release_date_eur
+                    then: {
+                      field: release_date_usa
+                      then: { field: release_date_jap }
+                    }
+                  }
+                ) {
+                  data {
+                    ...GameFragment
+                    releaseDate: release_date(region: all, format: "DD/MM/YYYY")
+                    releaseYear: release_date(region: all, format: "YYYY")
+                  }
+                }
+
+                unreleasedGames_all: games(
+                  release_year: {
+                    eur: $year
+                    jap: $year
+                    usa: $year
+                    operator: OR
+                  }
+                  has_been_released: {
+                    eur: false
+                    jap: false
+                    usa: false
+                    operator: AND
+                  }
+                ) {
+                  data {
+                    id
+                  }
+                }
+              }
+            }
+          `,
+          { year }
+        );
+
+        yearData[year] = data.mu;
+      })
+    );
+
+    return yearData;
+  };
 })();
 
-
 exports.createPages = async ({ actions, graphql }) => {
-    const { createPage } = actions;
+  const { createPage } = actions;
 
-    const { data: siteData } = await graphql(`
+  const { data: siteData } = await graphql(`
     query {
-        site {
-            siteMetadata {
-                activeYears
-            }
+      site {
+        siteMetadata {
+          activeYears
         }
-    }`);
+      }
+    }
+  `);
 
-    const { activeYears } = siteData.site.siteMetadata;
-    const [firstYearWithGames] = activeYears;
-    const lastYearWithGames = activeYears[activeYears.length - 1];
+  const { activeYears } = siteData.site.siteMetadata;
+  const [firstYearWithGames] = activeYears;
+  const lastYearWithGames = activeYears[activeYears.length - 1];
 
-    const yearsData = await getYearsData(activeYears, graphql);
+  const yearsData = await getYearsData(activeYears, graphql);
 
-    activeYears.forEach((year) => {
-        const yearData = yearsData[year];
+  activeYears.forEach(year => {
+    const yearData = yearsData[year];
 
-        if (!yearData) {
-            return;
-        }
+    if (!yearData) {
+      return;
+    }
 
-        const page = {
-            component: path.resolve(`./src/templates/GamesByYear.jsx`),
-            context: {
-                yearData,
-                year,
-                isFirstYear: year <= firstYearWithGames,
-                isLastYear: year >= lastYearWithGames,
-            },
-        };
+    const page = {
+      component: path.resolve(`./src/templates/GamesByYear.jsx`),
+      context: {
+        yearData,
+        year,
+        isFirstYear: year <= firstYearWithGames,
+        isLastYear: year >= lastYearWithGames,
+      },
+    };
 
-        createPage({
-            path: `jeux-de-${year}`,
-            ...page,
-        });
-
-        ['europe', 'japon', 'etats-unis'].forEach((region) => {
-            createPage({
-                path: `jeux-de-${year}/${region}`,
-                ...page,
-            });
-        });
+    createPage({
+      path: `jeux-de-${year}`,
+      ...page,
     });
 
-    const games = await getGames(graphql);
-    
-    for (const game of games) {
-        createPage({
-            path: game.slug,
-            component: path.resolve('./src/templates/GameDetails.jsx'),
-            context: { game },
-        });
+    ["europe", "japon", "etats-unis"].forEach(region => {
+      createPage({
+        path: `jeux-de-${year}/${region}`,
+        ...page,
+      });
+    });
+  });
+
+  const games = await getGames(graphql);
+
+  for (const game of games) {
+    createPage({
+      path: game.slug,
+      component: path.resolve("./src/templates/GameDetails.jsx"),
+      context: { game },
+    });
+  }
+
+  const { data: queryResponse } = await graphql(`
+    query {
+      mu {
+        approximarios {
+          data {
+            id
+            content
+
+            game {
+              id
+              slug(withId: true)
+              name
+              imagePreview: image(hq: false)
+              image
+            }
+          }
+        }
+      }
     }
-}
+  `);
+
+  createPage({
+    path: "approximarios",
+    component: path.resolve("./src/templates/ApproxiMarios.jsx"),
+    context: { approximarios: queryResponse.mu.approximarios.data },
+  });
+};

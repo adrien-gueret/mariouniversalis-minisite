@@ -1,24 +1,30 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { Link } from 'gatsby';
-import styled from 'styled-components';
+import React, { useState, useEffect, useContext } from "react";
+import { Link } from "gatsby";
+import styled from "styled-components";
 
-import Metas from '../modules/app/components/Metas';
-import VideoCard from '../modules/games/components/VideoCard';
-import ChevronLeft from '../modules/icons/ChevronLeft';
-import External from '../modules/icons/External';
-import MainLayout from '../modules/layouts/MainLayout';
-import RegionContext from '../modules/regions/context';
-import FLAGS from '../modules/regions/flags';
-import SLUGS from '../modules/regions/regionSlugs';
-import { Block, Button, Image, InfoTooltip, ConfettiLuncher } from '../modules/ui';
+import Metas from "../modules/app/components/Metas";
+import VideoCard from "../modules/games/components/VideoCard";
+import ChevronLeft from "../modules/icons/ChevronLeft";
+import External from "../modules/icons/External";
+import MainLayout from "../modules/layouts/MainLayout";
+import RegionContext from "../modules/regions/context";
+import FLAGS from "../modules/regions/flags";
+import SLUGS from "../modules/regions/regionSlugs";
+import {
+  Block,
+  Button,
+  Image,
+  InfoTooltip,
+  ConfettiLuncher,
+} from "../modules/ui";
 
-import warioSign from './images/wario_sign.png';
+import warioSign from "./images/wario_sign.png";
 
 const FLAGS_ALTS = {
-  eur: 'Sortie européenne',
-  usa: 'Sortie américaine',
-  jap: 'Sortie japonaise',
-  all: 'Sortie mondiale',
+  eur: "Sortie européenne",
+  usa: "Sortie américaine",
+  jap: "Sortie japonaise",
+  all: "Sortie mondiale",
 };
 
 const CenteredBlock = styled(Block)`
@@ -29,8 +35,8 @@ const ImageContainer = styled.div`
   margin: auto;
   width: 100%;
 
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    width: 50%;     
+  ${({ theme }) => theme.breakpoints.up("md")} {
+    width: 50%;
   }
 `;
 
@@ -47,8 +53,8 @@ const Description = styled.p`
 
   width: 100%;
 
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    width: 75%;     
+  ${({ theme }) => theme.breakpoints.up("md")} {
+    width: 75%;
   }
 `;
 
@@ -70,7 +76,7 @@ const GameDataTitle = styled.dt`
 `;
 
 const ReleaseDateFlag = styled(GameDataTitle)`
-  margin: 0; 
+  margin: 0;
   top: ${({ theme }) => theme.spacing(1.5)};
   position: relative;
 `;
@@ -138,15 +144,17 @@ const Footer = styled.footer`
 const YearLabel = styled.span`
   display: none;
 
-  ${({ theme }) => theme.breakpoints.up('sm')} {
+  ${({ theme }) => theme.breakpoints.up("sm")} {
     display: inline;
   }
 `;
 
-const PrevYearButton = styled(Button)`margin-right: auto;`;
+const PrevYearButton = styled(Button)`
+  margin-right: auto;
+`;
 
 const InfoTooltipContainer = styled(InfoTooltip)`
-  margin-left: ${({ theme }) => theme.spacing(.5)};
+  margin-left: ${({ theme }) => theme.spacing(0.5)};
   vertical-align: bottom;
 `;
 
@@ -155,16 +163,15 @@ const VideoContainer = styled.section`
 `;
 
 const Grid = styled.ul`
-  
   list-style: none;
   justify-content: center;
   margin: ${({ theme }) => theme.spacing(6, 0)};
 
-  &>li {
+  & > li {
     margin-bottom: ${({ theme }) => theme.spacing(3)};
   }
 
-  ${({ theme }) => theme.breakpoints.up('sm')} {
+  ${({ theme }) => theme.breakpoints.up("sm")} {
     display: grid;
     grid-template-columns: repeat(auto-fill, 480px);
     grid-gap: ${({ theme }) => theme.spacing(3)};
@@ -180,40 +187,45 @@ export default function GameDetails({ pageContext }) {
   }, [setIsFirstRender]);
 
   const { region: currentRegion } = useContext(RegionContext);
-  
+
   const { game } = pageContext;
   const { videos } = game;
 
   const popularity = Math.round(game.popularity * 10) / 10;
 
-  const aggregateRating = game.totalRatings > 0 ? {
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: popularity,
-      worstRating: 0,
-      bestRating: 20,
-      ratingCount: game.totalRatings,
-    },
-  } : {};
+  const aggregateRating =
+    game.totalRatings > 0
+      ? {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: popularity,
+            worstRating: 0,
+            bestRating: 20,
+            ratingCount: game.totalRatings,
+          },
+        }
+      : {};
 
   const jsonld = {
-    '@context': 'https://schema.org',
-    '@type': 'VideoGame',
+    "@context": "https://schema.org",
+    "@type": "VideoGame",
     name: game.name,
     description: game.description,
     image: game.image,
     url: `https://www.mariouniversalis.fr/${game.slug}`,
-    genre: game.genres.map(({ name }) => name).join(' '),
+    genre: game.genres.map(({ name }) => name).join(" "),
     gamePlatform: [game.device.name],
-    video: videos.data.map(({ id, title, thumbnail, channel, description, publishDate }) => ({
-      '@type': 'VideoObject',
-      name: title,
-      author: channel,
-      embedUrl: `https://www.youtube.com/embed/${id}`,
-      thumbnailUrl: thumbnail.url,
-      description: description || 'Cette vidéo n\'a pas de description',
-      uploadDate: publishDate,
-    })),
+    video: videos.data.map(
+      ({ id, title, thumbnail, channel, description, publishDate }) => ({
+        "@type": "VideoObject",
+        name: title,
+        author: channel,
+        embedUrl: `https://www.youtube.com/embed/${id}`,
+        thumbnailUrl: thumbnail.url,
+        description: description || "Cette vidéo n'a pas de description",
+        uploadDate: publishDate,
+      })
+    ),
     ...aggregateRating,
   };
 
@@ -223,60 +235,80 @@ export default function GameDetails({ pageContext }) {
 
   let shouldRenderConfetti = false;
 
-  const isGlobalRelease = game.releaseDate.eur === game.releaseDate.usa && game.releaseDate.usa === game.releaseDate.jap;
-  const regionsToCheck = isGlobalRelease ? ['eur'] : ['eur', 'usa', 'jap'];
+  const isGlobalRelease =
+    game.releaseDate.eur === game.releaseDate.usa &&
+    game.releaseDate.usa === game.releaseDate.jap;
+  const regionsToCheck = isGlobalRelease ? ["eur"] : ["eur", "usa", "jap"];
 
   const ageLabels = regionsToCheck
-  .filter((region) => Boolean(game.releaseDate[region]))
-  .map((region) => {
-    const releaseDate = game.releaseDate[region];
-    const ageInYears = game.age[region];
-    const ageInDays = game.ageInDays[region];
-    const isReleased = game.isReleased[region];
-    
-    let ageLabel = '';
+    .filter(region => Boolean(game.releaseDate[region]))
+    .map(region => {
+      const releaseDate = game.releaseDate[region];
+      const ageInYears = game.age[region];
+      const ageInDays = game.ageInDays[region];
+      const isReleased = game.isReleased[region];
 
-    if (isReleased) {
-      if (ageInYears === 0) {
-        ageLabel = ` (${['Aujourd\'hui !', 'Hier', 'Avant-hier'][ageInDays] || `il y a ${ageInDays} jours`})`;
-        shouldRenderConfetti = shouldRenderConfetti || ageInDays === 0;
+      let ageLabel = "";
+
+      if (isReleased) {
+        if (ageInYears === 0) {
+          ageLabel = ` (${
+            ["Aujourd'hui !", "Hier", "Avant-hier"][ageInDays] ||
+            `il y a ${ageInDays} jours`
+          })`;
+          shouldRenderConfetti = shouldRenderConfetti || ageInDays === 0;
+        } else {
+          const splittedReleaseDate = releaseDate.split("/");
+          const anniversaryDay = +splittedReleaseDate[0];
+          const anniversaryMonth = +splittedReleaseDate[1];
+          const today = new Date();
+
+          const isAnniversaryToday =
+            anniversaryDay === today.getDate() &&
+            anniversaryMonth === today.getMonth() + 1;
+
+          shouldRenderConfetti = shouldRenderConfetti || isAnniversaryToday;
+
+          ageLabel = ` (${ageInYears} an${ageInYears > 1 ? "s" : ""}${
+            isAnniversaryToday ? " - Anniversaire aujour'hui ! 🎉" : ""
+          })`;
+        }
       } else {
-        const splittedReleaseDate = releaseDate.split('/');
-        const anniversaryDay = +splittedReleaseDate[0];
-        const anniversaryMonth = +splittedReleaseDate[1];
-        const today = new Date();
+        const gameReleaseYear = Number(game.releaseYear[region]);
+        const currentYear = new Date().getFullYear();
+        const hasReleaseThisYear = gameReleaseYear === currentYear;
 
-        const isAnniversaryToday = anniversaryDay === today.getDate() && anniversaryMonth === today.getMonth() + 1;
+        const daysBeforeAnniversary = game.daysBeforeAnniversary[region];
+        const isPlanned = daysBeforeAnniversary !== null;
+        const isBlurryDate = releaseDate.indexOf("?") >= 0;
 
-        shouldRenderConfetti = shouldRenderConfetti || isAnniversaryToday;
+        const willBeReleasedThisYearButDontKnowWhen =
+          hasReleaseThisYear && isBlurryDate;
 
-        ageLabel = ` (${ageInYears} an${ageInYears > 1 ? 's': ''}${isAnniversaryToday ? ' - Anniversaire aujour\'hui ! 🎉' : ''})`;
+        const blurryLabel = isBlurryDate ? " au moins" : "";
+
+        if (isPlanned && !willBeReleasedThisYearButDontKnowWhen) {
+          ageLabel = ` (${
+            ["Aujourd'hui !", "Demain !", "Après-demain !"][
+              daysBeforeAnniversary
+            ] ||
+            `dans${blurryLabel} ${daysBeforeAnniversary} jour${
+              daysBeforeAnniversary > 1 ? "s" : ""
+            }`
+          })`;
+        }
       }
-    } else {
-      const gameReleaseYear = Number(game.releaseYear[region]);
-      const currentYear = new Date().getFullYear();
-      const hasReleaseThisYear = gameReleaseYear === currentYear;
 
-      const daysBeforeAnniversary = game.daysBeforeAnniversary[region];
-      const isPlanned = daysBeforeAnniversary !== null;
-      const isBlurryDate = releaseDate.indexOf('?') >= 0;
+      return { region, flagRegion: isGlobalRelease ? "all" : region, ageLabel };
+    });
 
-      const willBeReleasedThisYearButDontKnowWhen = hasReleaseThisYear && isBlurryDate;
-
-      const blurryLabel = isBlurryDate ? ' au moins' : '';
-
-      if (isPlanned && !willBeReleasedThisYearButDontKnowWhen) {
-        ageLabel = ` (${['Aujourd\'hui !', 'Demain !', 'Après-demain !'][daysBeforeAnniversary] || `dans${blurryLabel} ${daysBeforeAnniversary} jour${daysBeforeAnniversary > 1 ? 's': ''}`})`;
-      }
-    }
-
-    return { region, flagRegion: isGlobalRelease ? 'all' : region, ageLabel };
-  });
-
-  const isSSR = typeof window === 'undefined';
-  const releaseYear =  game.releaseYear[currentRegion]
-    || (!isSSR && +localStorage.getItem('year'))
-    || game.releaseYear.eur || game.releaseYear.usa || game.releaseYear.jap;
+  const isSSR = typeof window === "undefined";
+  const releaseYear =
+    game.releaseYear[currentRegion] ||
+    (!isSSR && +localStorage.getItem("year")) ||
+    game.releaseYear.eur ||
+    game.releaseYear.usa ||
+    game.releaseYear.jap;
 
   return (
     <MainLayout>
@@ -286,89 +318,89 @@ export default function GameDetails({ pageContext }) {
         url={`https://www.mariouniversalis.fr/minisite/${game.slug}`}
         image={game.image}
       />
-      
-      { (shouldRenderConfetti && !isFirstRender) && <ConfettiLuncher /> }
 
-      <CenteredBlock
-        title={game.name}
-        titleComponent="h1"
-      >
+      {shouldRenderConfetti && !isFirstRender && <ConfettiLuncher />}
+
+      <CenteredBlock title={game.name} titleComponent="h1">
         <ImageContainer>
           <Image
-              src={game.image}
-              previewSrc={game.imagePreview}
-              alt={game.name}
-              width="100%"
-              height={400}
+            src={game.image}
+            previewSrc={game.imagePreview}
+            alt={game.name}
+            width="100%"
+            height={400}
           />
         </ImageContainer>
-    
-        <Description>{ game.description }</Description>
+
+        <Description>{game.description}</Description>
 
         <MainGameDataList>
           <GameDataTitle>Appareil</GameDataTitle>
           <GameDataInfo>
-            <DeviceLogo
-              src={game.device.logo}
-              alt={`${game.device.name}`}
-            />
+            <DeviceLogo src={game.device.logo} alt={`${game.device.name}`} />
 
-            <Caption>({ game.device.name })</Caption>   
+            <Caption>({game.device.name})</Caption>
           </GameDataInfo>
 
-          { game.popularity && (
+          {game.popularity && (
             <>
               <GameDataTitle>
                 Popularité
                 <InfoTooltipContainer
-                  title={`Moyenne bayésienne sur 20 calculée sur un total de ${game.totalRatings} note${game.totalRatings > 1 ? 's' : ''}`}
+                  title={`Moyenne bayésienne sur 20 calculée sur un total de ${
+                    game.totalRatings
+                  } note${game.totalRatings > 1 ? "s" : ""}`}
                 />
               </GameDataTitle>
               <PopularityInfo>
-                <PopularityValue>{ popularity }</PopularityValue>
+                <PopularityValue>{popularity}</PopularityValue>
               </PopularityInfo>
             </>
-          ) }
+          )}
 
-          <GameDataTitle>{ `Date${isGlobalRelease ? '' : 's'} de sortie` }</GameDataTitle>
+          <GameDataTitle>{`Date${
+            isGlobalRelease ? "" : "s"
+          } de sortie`}</GameDataTitle>
 
           <GameDataInfo>
             <GameDataList>
-              { ageLabels.map(({ region, flagRegion, ageLabel }) => (
-                  <React.Fragment key={region}>
-                    <ReleaseDateFlag>
-                      <img
-                        src={FLAGS[flagRegion]}
-                        alt={FLAGS_ALTS[flagRegion]}
-                        title={FLAGS_ALTS[flagRegion]}
-                      />
-                    </ReleaseDateFlag>
-                    <ReleaseDateInfo>
-                      <ReleaseDate>{ game.releaseDate[region] }</ReleaseDate>
-                      { ageLabel && <Caption>{ ageLabel }</Caption> }
-                    </ReleaseDateInfo>
-                  </React.Fragment>
-                )) }
+              {ageLabels.map(({ region, flagRegion, ageLabel }) => (
+                <React.Fragment key={region}>
+                  <ReleaseDateFlag>
+                    <img
+                      src={FLAGS[flagRegion]}
+                      alt={FLAGS_ALTS[flagRegion]}
+                      title={FLAGS_ALTS[flagRegion]}
+                    />
+                  </ReleaseDateFlag>
+                  <ReleaseDateInfo>
+                    <ReleaseDate>{game.releaseDate[region]}</ReleaseDate>
+                    {ageLabel && <Caption>{ageLabel}</Caption>}
+                  </ReleaseDateInfo>
+                </React.Fragment>
+              ))}
             </GameDataList>
           </GameDataInfo>
 
           <GameDataTitle>Manuel</GameDataTitle>
           <GameDataInfo>
-          { game.manualURL ? (
-            <ExternalLink href={game.manualURL} target="_blank">
-              Voir le manuel de "{ game.name }"
-              <External />
-            </ExternalLink>
-          ) : <Caption>Nous ne possédons pas le manuel de ce jeu.</Caption>}
+            {game.manualURL ? (
+              <ExternalLink href={game.manualURL} target="_blank">
+                Voir le manuel de "{game.name}"
+                <External />
+              </ExternalLink>
+            ) : (
+              <Caption>Nous ne possédons pas le manuel de ce jeu.</Caption>
+            )}
           </GameDataInfo>
         </MainGameDataList>
 
-        { Boolean(videos.data.length) && (
+        {Boolean(videos.data.length) && (
           <VideoContainer>
-            <h2>Vidéo{videos.data.length > 1 ? 's' : ''} autour de ce jeu</h2>
+            <h2>Vidéo{videos.data.length > 1 ? "s" : ""} autour de ce jeu</h2>
 
             <Grid>
-              { videos.data.map(({ id, title, thumbnail, channel }) => (
+              {videos.data.map(({ id, title, thumbnail, channel }) => (
                 <li key={id}>
                   <VideoCard
                     title={title}
@@ -381,28 +413,33 @@ export default function GameDetails({ pageContext }) {
                     onPlay={() => setPlayingVideoId(id)}
                   />
                 </li>
-              )) }
+              ))}
             </Grid>
           </VideoContainer>
         )}
-        
 
         <Footer>
-          { releaseYear && (
-            <PrevYearButton $primary as={Link} to={`/jeux-de-${releaseYear}${SLUGS[currentRegion]}`}>
+          {releaseYear && (
+            <PrevYearButton
+              $primary
+              as={Link}
+              to={`/jeux-de-${releaseYear}${SLUGS[currentRegion]}`}
+            >
               <ChevronLeft />
-              <span><YearLabel>Voir les autres jeux sortis en </YearLabel>{releaseYear}</span>
+              <span>
+                <YearLabel>Voir les autres jeux sortis en </YearLabel>
+                {releaseYear}
+              </span>
             </PrevYearButton>
           )}
         </Footer>
 
         <script
-          type="application/ld+json" 
+          type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(jsonld),
           }}
         />
-
       </CenteredBlock>
     </MainLayout>
   );

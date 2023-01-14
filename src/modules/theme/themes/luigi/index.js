@@ -1,12 +1,12 @@
-import defaultTheme from '../default';
+import defaultTheme from "../default";
 
-import images from './constants/images';
-import palette from './constants/palette';
+import images from "./constants/images";
+import palette from "./constants/palette";
 
 const theme = {
-    ...defaultTheme,
-    images,
-    palette,
+  ...defaultTheme,
+  images,
+  palette,
 };
 
 export default theme;

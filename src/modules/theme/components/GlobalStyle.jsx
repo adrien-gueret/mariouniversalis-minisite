@@ -1,4 +1,4 @@
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle } from "styled-components";
 
 const GlobalStyle = createGlobalStyle`
     html, body, h1, h2, h3, p, ul, li {
@@ -28,6 +28,6 @@ const GlobalStyle = createGlobalStyle`
         ${({ theme }) => theme.typography.variants.body1}
         min-width: 375px;
     }    
-`
+`;
 
 export default GlobalStyle;

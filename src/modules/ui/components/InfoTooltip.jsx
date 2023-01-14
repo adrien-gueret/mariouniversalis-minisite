@@ -1,16 +1,16 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
-import Info from '../../icons/Info';
+import Info from "../../icons/Info";
 
 const Root = styled.span`
-    cursor: help;
+  cursor: help;
 `;
 
 export default function InfoTooltip(props) {
-    return (
-        <Root {...props}>
-            <Info width={16} />
-        </Root>
-    );
+  return (
+    <Root {...props}>
+      <Info width={16} />
+    </Root>
+  );
 }
