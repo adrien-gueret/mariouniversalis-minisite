@@ -69,8 +69,8 @@ export default function ApproxiMario({ id, content, game }) {
   const [showAnswer, setShowAnswer] = useState(false);
 
   const initTweet = () => {
-    const tweetContent = `#ApproxiMario n°${id}
-    
+    const tweetContent = `#ApproxiMario (via @MarioUnivRsalis)
+
 ${content}`;
 
     const twitterURL = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
