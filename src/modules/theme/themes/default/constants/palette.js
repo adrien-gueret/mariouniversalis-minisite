@@ -23,6 +23,7 @@ const palette = {
     primary: baseColors.red,
   },
   line: baseColors.lightBlack,
+  twitter: "#00acee",
 };
 
 export default palette;

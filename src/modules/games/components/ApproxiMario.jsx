@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-import { TextButton, IconButton } from "../../ui";
-import CopyIcon from "../../icons/Copy";
+import { TextButton } from "../../ui";
+import TwitterIcon from "../../icons/Twitter";
 import ShowIcon from "../../icons/Show";
 import HideIcon from "../../icons/Hide";
 
 import GameCard from "./GameCard";
 
 const Root = styled.div`
+  position: relative;
   background-color: ${({ theme }) => theme.palette.background.secondary};
   margin: ${({ theme }) => theme.spacing(3, 0)};
   width: 100%;
@@ -40,13 +41,58 @@ const Game = styled(GameCard)`
   margin: ${({ theme }) => theme.spacing(1) + " auto"};
 `;
 
+const TwitterButton = styled.button`
+  position: absolute;
+  top: ${({ theme }) => theme.spacing(1)};
+  right: ${({ theme }) => theme.spacing(1)};
+
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+
+  & svg {
+    color: ${({ theme }) => theme.palette.twitter};
+    transition: transform 300ms;
+    transform-origin: center;
+    transform: scale(0.8);
+  }
+
+  &:hover,
+  &:focus {
+    & svg {
+      transform: scale(1.2);
+    }
+  }
+`;
+
 export default function ApproxiMario({ id, content, game }) {
   const [showAnswer, setShowAnswer] = useState(false);
+
+  const initTweet = () => {
+    const tweetContent = `#ApproxiMario n°${id}
+    
+${content}`;
+
+    const twitterURL = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+      tweetContent
+    )}`;
+
+    window.open(twitterURL);
+  };
 
   return (
     <Root id={`approximario-{id}`}>
       <Container>
-        <Title>ApproxiMario #{id}</Title>
+        <header>
+          <Title>ApproxiMario #{id}</Title>
+          <TwitterButton
+            aria-label="Partager cet ApproxiMario sur Twitter"
+            title="Partager cet ApproxiMario sur Twitter"
+            onClick={initTweet}
+          >
+            <TwitterIcon />
+          </TwitterButton>
+        </header>
         <Content>{content}</Content>
         <TextButton onClick={() => setShowAnswer(v => !v)}>
           {showAnswer ? <HideIcon /> : <ShowIcon />}
