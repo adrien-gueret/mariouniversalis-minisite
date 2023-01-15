@@ -20,6 +20,7 @@ const Header = styled.header`
   color: ${({ theme }) => theme.palette.text.contrasted};
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
 `;
 
 const HeaderLink = styled(Link)`
@@ -33,10 +34,6 @@ const HeaderLink = styled(Link)`
 
   margin-right: ${({ theme }) => theme.spacing(4)};
   white-space: nowrap;
-
-  &.first {
-    margin-left: auto;
-  }
 
   &::after {
     content: "";
@@ -79,6 +76,11 @@ const TwitterLink = styled.a`
   }
 `;
 
+const LinkContainer = styled.div`
+  margin-left: auto;
+  display: flex;
+`;
+
 function MainLayout({ children }) {
   return (
     <main>
@@ -86,17 +88,20 @@ function MainLayout({ children }) {
         <Link to="/" title="Retour à l'accueil" aria-label="Retour à l'accueil">
           <Logo src={logo} alt="Mario Universalis" />
         </Link>
-        <HeaderLink className="first" to="/approximarios">
-          ApproxiMarios
-        </HeaderLink>
-        <HeaderLink to="/a-propos">À propos</HeaderLink>
-        <TwitterLink
-          href="https://twitter.com/MarioUnivRsalis"
-          title="@MarioUnivRsalis"
-          aria-label="Compte Twitter : @MarioUnivRsalis"
-        >
-          <TwitterIcon />
-        </TwitterLink>
+
+        <LinkContainer>
+          <HeaderLink className="first" to="/approximarios">
+            ApproxiMarios
+          </HeaderLink>
+          <HeaderLink to="/a-propos">À propos</HeaderLink>
+          <TwitterLink
+            href="https://twitter.com/MarioUnivRsalis"
+            title="@MarioUnivRsalis"
+            aria-label="Compte Twitter : @MarioUnivRsalis"
+          >
+            <TwitterIcon />
+          </TwitterLink>
+        </LinkContainer>
       </Header>
 
       <Content>{children}</Content>

@@ -13,10 +13,15 @@ const typograhy = {
       line-height: 1.8rem;
     `,
     title: css`
-      font-size: 2.5rem;
-      line-height: 2.5rem;
+      font-size: 2rem;
+      line-height: 2rem;
       font-weight: bold;
       text-shadow: 2px 2px rgb(0 0 0 / 20%);
+
+      ${({ theme }) => theme.breakpoints.up("sm")} {
+        font-size: 2.5rem;
+        line-height: 2.5rem;
+      }
     `,
     subtitle: css`
       font-size: 1.2rem;
