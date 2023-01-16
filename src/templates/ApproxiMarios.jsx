@@ -16,11 +16,11 @@ export default function GamesByYear({ pageContext }) {
     <MainLayout>
       <Metas
         title="ApproxiMarios"
-        description="Devinez quels jeux Mario sont décris à travers des descriptions très approximatives !"
+        description="Devinez à quels jeux Mario correspondent ces descriptions très approximatives !"
       />
       <CenteredBlock title="ApproxiMarios" titleComponent="h1">
         <p>
-          Devinez quels jeux Mario sont décris à travers des descriptions très
+          Devinez à quels jeux Mario correspondent ces descriptions très
           approximatives !
         </p>
 
