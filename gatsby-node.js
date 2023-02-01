@@ -278,7 +278,7 @@ exports.createPages = async ({ actions, graphql }) => {
   const { data: queryResponse } = await graphql(`
     query {
       mu {
-        approximarios {
+        approximarios(per_page: 100) {
           data {
             id
             content
