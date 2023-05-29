@@ -30,9 +30,17 @@ const SuperMario = styled.img`
 const Hidden = styled.div`
   display: none;
 `;
+
 const CenteredBlock = styled(Block)`
   max-width: 768px;
   margin: auto;
+`;
+
+const Stack = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing(3)};
 `;
 
 export default function Home() {
@@ -50,14 +58,17 @@ export default function Home() {
         }
         titleComponent="h1"
         actions={
-          <>
-            <Button $primary as={Link} to={`/jeux-de-${currentYear}`}>
+          <Stack>
+            <Button $primary as={Link} to="/rechercher">
+              Rechercher un jeu
+            </Button>
+            <Button as={Link} to={`/jeux-de-${currentYear}`}>
               Voir les jeux de cette année
             </Button>
             <Button as={Link} to="/selectionner-annee">
-              Sélectionner une autre année
+              Sélectionner une année
             </Button>
-          </>
+          </Stack>
         }
       >
         <p>

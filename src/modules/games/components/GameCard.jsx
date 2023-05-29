@@ -85,6 +85,7 @@ const Root = styled(Link)`
 
 export default function GameCard({
   name,
+  cardTitle = name,
   slug,
   image,
   imagePreview,
@@ -112,7 +113,7 @@ export default function GameCard({
 
         <Content>
           <Header>
-            <Title>{name}</Title>
+            <Title>{cardTitle}</Title>
             <DeviceLogo src={deviceLogo} alt={deviceName} title={deviceName} />
           </Header>
 

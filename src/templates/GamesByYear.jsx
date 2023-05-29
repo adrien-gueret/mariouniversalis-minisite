@@ -1,16 +1,16 @@
 import React, { useEffect, useContext } from "react";
 import { Link } from "gatsby";
-import styled, { ThemeContext, keyframes } from "styled-components";
+import styled, { ThemeContext } from "styled-components";
 
 import Metas from "../modules/app/components/Metas";
-import { GameCard, YEAR_OF_LUIGI } from "../modules/games";
+import { GridGames, YEAR_OF_LUIGI } from "../modules/games";
 import MainLayout from "../modules/layouts/MainLayout";
 import RegionContext from "../modules/regions/context";
 import FLAGS from "../modules/regions/flags";
 import REGION_LABELS from "../modules/regions/regionLabels";
 import REGION_SLUGS from "../modules/regions/regionSlugs";
 import RegionSwitcher from "../modules/regions/RegionSwitcher";
-import { Block, Button } from "../modules/ui";
+import { Block, Button, NotFound } from "../modules/ui";
 
 import luigiTheme from "../modules/theme/themes/luigi";
 
@@ -39,34 +39,10 @@ const CenteredBlock = styled(Block)`
       : ""}
 `;
 
-const Grid = styled.div`
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-gap: ${({ theme }) => theme.spacing(3)};
+const Grid = styled(GridGames)`
   margin: ${({ theme }) => theme.spacing(6, 0)};
-
-  ${({ theme }) => theme.breakpoints.up("md")} {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  ${({ theme }) => theme.breakpoints.up("lg")} {
-    grid-template-columns: repeat(4, 1fr);
-  }
-`;
-
-const shadeAnimation = keyframes`
-  from {
-    opacity: 0.1;
-  }
-
-  to {
-    opacity 1;
-  }
-`;
-
-const GridGameItem = styled(GameCard)`
-  opacity: 0.1;
-  animation: 300ms ${shadeAnimation} ease-in 1 forwards;
+  margin-left: auto;
+  margin-right: auto;
 `;
 
 const ReleaseDate = styled.div`
@@ -247,7 +223,7 @@ export default function GamesByYear({ pageContext }) {
                 }
 
                 return (
-                  <GridGameItem
+                  <GridGames.Item
                     key={game.id}
                     name={game.name}
                     image={game.image}
@@ -260,22 +236,20 @@ export default function GamesByYear({ pageContext }) {
                     }}
                   >
                     {releaseDateContent}
-                  </GridGameItem>
+                  </GridGames.Item>
                 );
               })}
             </Grid>
           </>
         ) : (
-          <>
-            <p>
-              Aucun jeu Mario n'est{" "}
-              {isCurrentYear || isFutureYear
-                ? " prévu pour le moment "
-                : " sorti "}
-              <RegionSwitcher year={year} />
-              en {year}.
-            </p>
-          </>
+          <NotFound>
+            Aucun jeu Mario n'est{" "}
+            {isCurrentYear || isFutureYear
+              ? " prévu pour le moment "
+              : " sorti "}
+            <RegionSwitcher year={year} />
+            en {year}.
+          </NotFound>
         )}
 
         <YearNavigation>
