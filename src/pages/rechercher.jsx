@@ -172,13 +172,13 @@ export default function Search() {
           routing={{
             stateMapping: {
               stateToRoute({ games }) {
-                const { query: q, page } = games;
+                const { query: q } = games;
 
-                return { q, page };
+                return { q };
               },
-              routeToState({ q: query, page }) {
+              routeToState({ q: query }) {
                 return {
-                  games: { query, page },
+                  games: { query },
                 };
               },
             },

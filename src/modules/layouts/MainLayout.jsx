@@ -2,7 +2,9 @@ import React from "react";
 import styled from "styled-components";
 import { Link } from "gatsby";
 
+import SearchIcon from "../icons/Search";
 import TwitterIcon from "../icons/Twitter";
+
 import logo from "./images/logo.png";
 
 const Logo = styled.img`
@@ -57,6 +59,24 @@ const HeaderLink = styled(Link)`
   }
 `;
 
+const SearchLink = styled(HeaderLink)`
+  color: inherit;
+  transition: color 300ms;
+
+  & svg {
+    transition: transform 300ms;
+    transform-origin: center;
+    transform: scale(1.3);
+  }
+
+  &:hover,
+  &:focus {
+    & svg {
+      transform: scale(1.6);
+    }
+  }
+`;
+
 const TwitterLink = styled.a`
   color: inherit;
   transition: color 300ms;
@@ -94,6 +114,13 @@ function MainLayout({ children }) {
             ApproxiMarios
           </HeaderLink>
           <HeaderLink to="/a-propos">À propos</HeaderLink>
+          <SearchLink
+            to="/rechercher"
+            title="Rechercher un jeu Mario"
+            aria-label="Rechercher un jeu Mario"
+          >
+            <SearchIcon />
+          </SearchLink>
           <TwitterLink
             href="https://twitter.com/MarioUnivRsalis"
             title="@MarioUnivRsalis"
