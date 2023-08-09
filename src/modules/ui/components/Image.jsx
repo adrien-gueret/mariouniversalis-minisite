@@ -16,15 +16,15 @@ const ImageContainer = styled.div`
   background-position: center;
 `;
 
-const ImageSrc = styled.div`
+const ContainedImage = styled.img`
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
+  width: 100%;
+  object-fit: contain;
+  object-position: center;
   transition: opacity 100ms;
 `;
 
@@ -82,18 +82,20 @@ export default function Image({
       </Helmet>
 
       {isOnViewPort && previewSrc && (
-        <ImageSrc
+        <ContainedImage
+          src={previewSrc}
           style={{
-            backgroundImage: `url(${previewSrc})`,
+            height,
             opacity: isLoading || mainImage.isComplete ? 0 : 1,
           }}
         />
       )}
 
       {isOnViewPort && (
-        <ImageSrc
+        <ContainedImage
+          src={src}
           style={{
-            backgroundImage: `url(${src})`,
+            height,
             opacity: mainImage.isComplete ? 1 : 0,
           }}
         />

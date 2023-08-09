@@ -212,7 +212,7 @@ export default function GameDetails({ pageContext }) {
     name: game.name,
     description: game.description,
     image: game.image,
-    url: `https://www.mariouniversalis.fr/${game.slug}`,
+    url: `https://www.mariouniversalis.fr/minisite/${game.slug}`,
     genre: game.genres.map(({ name }) => name).join(" "),
     gamePlatform: [game.device.name],
     video: videos.data.map(
