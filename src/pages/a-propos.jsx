@@ -54,7 +54,8 @@ export default function About() {
           </p>
           <p>
             Ce mini-site utilise l'API de YouTube pour afficher les vidéos des
-            jeux.
+            jeux. En navigant sur ce mini-site, vous acceptez être liés aux
+            conditions générales d'utilisation de YouTube et Google.
             <br />
             De fait, veuillez consulter{" "}
             <a href="https://www.youtube.com/t/terms">
