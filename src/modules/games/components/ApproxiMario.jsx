@@ -81,7 +81,7 @@ ${content}`;
   };
 
   return (
-    <Root id={`approximario-{id}`}>
+    <Root id={`approximario-${id}`}>
       <Container>
         <header>
           <Title>ApproxiMario #{id}</Title>
