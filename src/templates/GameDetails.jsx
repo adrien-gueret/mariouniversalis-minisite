@@ -219,7 +219,7 @@ export default function GameDetails({ pageContext }) {
       ({ id, title, thumbnail, channel, description, publishDate }) => ({
         "@type": "VideoObject",
         name: title,
-        author: channel,
+        author: { name: channel.title },
         embedUrl: `https://www.youtube.com/embed/${id}`,
         thumbnailUrl: thumbnail.url,
         description: description || "Cette vidéo n'a pas de description",
