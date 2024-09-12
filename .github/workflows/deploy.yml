@@ -32,7 +32,7 @@ jobs:
       - name: Upload public dir
         uses: actions/upload-artifact@v4
         with:
-          name: public
+          name: mini-site-build
           path: public
         env:
           CI: true
@@ -41,16 +41,14 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
       - name: Download public dir
         uses: actions/download-artifact@v4
         with:
-          name: public
+          name: mini-site-build
       - name: Upload to MU via FTP
-        uses: SamKirkland/FTP-Deploy-Action@4.1.0
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: "public/"
           server-dir: "httpdocs/minisite/"
