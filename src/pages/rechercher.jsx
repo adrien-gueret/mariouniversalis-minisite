@@ -19,8 +19,8 @@ import { Block, NotFound } from "../modules/ui";
 import algoliaLogo from "./images/algolia.svg";
 
 const searchClient = algoliasearch(
-  "HDIB9X50P6",
-  "f0dcb191a846f3eaa6b94172b2ddf629"
+  "CD0E3NP3WM",
+  "8dea531b5ddab197d98e56f2022d14d6"
 );
 
 const CenteredBlock = styled(Block)`
