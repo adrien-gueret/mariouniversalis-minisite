@@ -46,10 +46,17 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: mini-site-build
-      - name: Upload to MU via FTP
+      - name: Upload to MU via FTPS
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
+          # Sans "protocol", l'action utilise du FTP en clair : le mot de passe
+          # et le contenu des fichiers transitent en clair sur Internet.
+          # "strict" vérifie le certificat du serveur (Let's Encrypt valide
+          # depuis le 01/08/2026) ; sans ça la connexion serait chiffrée mais
+          # pas authentifiée.
+          protocol: ftps
+          security: strict
           server-dir: "httpdocs/minisite/"
