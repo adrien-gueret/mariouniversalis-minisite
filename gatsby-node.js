@@ -1,5 +1,16 @@
 const path = require(`path`);
 
+// Le serveur limite le débit sur /graphql/. Interroger toutes les années en
+// parallèle envoyait environ 370 requêtes en 10 secondes depuis l'IP du runner,
+// dont 300 refusées en 429, ce qui faisait échouer le build (04/08/2026).
+const MAX_PARALLEL_QUERIES = 4;
+
+const runInBatches = async (items, batchSize, callback) => {
+  for (let i = 0; i < items.length; i += batchSize) {
+    await Promise.all(items.slice(i, i + batchSize).map(callback));
+  }
+};
+
 const getGames = (() => {
   let games = [];
 
@@ -83,134 +94,132 @@ const getYearsData = (() => {
 
     yearData = {};
 
-    await Promise.all(
-      activeYears.map(async year => {
-        const { data } = await graphql(
-          `
-            fragment GameFragment on MU_Game {
-              id
-              slug(withId: true)
+    await runInBatches(activeYears, MAX_PARALLEL_QUERIES, async year => {
+      const { data } = await graphql(
+        `
+          fragment GameFragment on MU_Game {
+            id
+            slug(withId: true)
+            name
+            image
+            imagePreview: image(hq: false)
+            device {
               name
-              image
-              imagePreview: image(hq: false)
-              device {
-                name
-                logo
-              }
+              logo
             }
+          }
 
-            query ($year: Int!) {
-              mu {
-                allGames_eur: games(
-                  release_year: { eur: $year }
-                  per_page: 30
-                  order_by: { field: release_date_eur }
-                ) {
-                  data {
-                    ...GameFragment
-                    releaseDate: release_date(region: eur, format: "DD/MM/YYYY")
+          query ($year: Int!) {
+            mu {
+              allGames_eur: games(
+                release_year: { eur: $year }
+                per_page: 30
+                order_by: { field: release_date_eur }
+              ) {
+                data {
+                  ...GameFragment
+                  releaseDate: release_date(region: eur, format: "DD/MM/YYYY")
+                }
+              }
+
+              unreleasedGames_eur: games(
+                release_year: { eur: $year }
+                has_been_released: { eur: false }
+              ) {
+                data {
+                  id
+                }
+              }
+
+              allGames_usa: games(
+                release_year: { usa: $year }
+                per_page: 30
+                order_by: { field: release_date_usa }
+              ) {
+                data {
+                  ...GameFragment
+                  releaseDate: release_date(region: usa, format: "DD/MM/YYYY")
+                }
+              }
+
+              unreleasedGames_usa: games(
+                release_year: { usa: $year }
+                has_been_released: { usa: false }
+              ) {
+                data {
+                  id
+                }
+              }
+
+              allGames_jap: games(
+                release_year: { jap: $year }
+                per_page: 30
+                order_by: { field: release_date_jap }
+              ) {
+                data {
+                  ...GameFragment
+                  releaseDate: release_date(region: jap, format: "DD/MM/YYYY")
+                }
+              }
+
+              unreleasedGames_jap: games(
+                release_year: { jap: $year }
+                has_been_released: { jap: false }
+              ) {
+                data {
+                  id
+                }
+              }
+
+              allGames_all: games(
+                release_year: {
+                  eur: $year
+                  jap: $year
+                  usa: $year
+                  operator: OR
+                }
+                per_page: 30
+                order_by: {
+                  field: release_date_eur
+                  then: {
+                    field: release_date_usa
+                    then: { field: release_date_jap }
                   }
                 }
-
-                unreleasedGames_eur: games(
-                  release_year: { eur: $year }
-                  has_been_released: { eur: false }
-                ) {
-                  data {
-                    id
-                  }
+              ) {
+                data {
+                  ...GameFragment
+                  releaseDate: release_date(region: all, format: "DD/MM/YYYY")
+                  releaseYear: release_date(region: all, format: "YYYY")
                 }
+              }
 
-                allGames_usa: games(
-                  release_year: { usa: $year }
-                  per_page: 30
-                  order_by: { field: release_date_usa }
-                ) {
-                  data {
-                    ...GameFragment
-                    releaseDate: release_date(region: usa, format: "DD/MM/YYYY")
-                  }
+              unreleasedGames_all: games(
+                release_year: {
+                  eur: $year
+                  jap: $year
+                  usa: $year
+                  operator: OR
                 }
-
-                unreleasedGames_usa: games(
-                  release_year: { usa: $year }
-                  has_been_released: { usa: false }
-                ) {
-                  data {
-                    id
-                  }
+                has_been_released: {
+                  eur: false
+                  jap: false
+                  usa: false
+                  operator: AND
                 }
-
-                allGames_jap: games(
-                  release_year: { jap: $year }
-                  per_page: 30
-                  order_by: { field: release_date_jap }
-                ) {
-                  data {
-                    ...GameFragment
-                    releaseDate: release_date(region: jap, format: "DD/MM/YYYY")
-                  }
-                }
-
-                unreleasedGames_jap: games(
-                  release_year: { jap: $year }
-                  has_been_released: { jap: false }
-                ) {
-                  data {
-                    id
-                  }
-                }
-
-                allGames_all: games(
-                  release_year: {
-                    eur: $year
-                    jap: $year
-                    usa: $year
-                    operator: OR
-                  }
-                  per_page: 30
-                  order_by: {
-                    field: release_date_eur
-                    then: {
-                      field: release_date_usa
-                      then: { field: release_date_jap }
-                    }
-                  }
-                ) {
-                  data {
-                    ...GameFragment
-                    releaseDate: release_date(region: all, format: "DD/MM/YYYY")
-                    releaseYear: release_date(region: all, format: "YYYY")
-                  }
-                }
-
-                unreleasedGames_all: games(
-                  release_year: {
-                    eur: $year
-                    jap: $year
-                    usa: $year
-                    operator: OR
-                  }
-                  has_been_released: {
-                    eur: false
-                    jap: false
-                    usa: false
-                    operator: AND
-                  }
-                ) {
-                  data {
-                    id
-                  }
+              ) {
+                data {
+                  id
                 }
               }
             }
-          `,
-          { year }
-        );
+          }
+        `,
+        { year }
+      );
 
-        yearData[year] = data.mu;
-      })
-    );
+      yearData[year] = data.mu;
+    });
 
     return yearData;
   };
