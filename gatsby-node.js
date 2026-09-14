@@ -1,16 +1,5 @@
 const path = require(`path`);
 
-// Le serveur limite le débit sur /graphql/. Interroger toutes les années en
-// parallèle envoyait environ 370 requêtes en 10 secondes depuis l'IP du runner,
-// dont 300 refusées en 429, ce qui faisait échouer le build (04/08/2026).
-const MAX_PARALLEL_QUERIES = 4;
-
-const runInBatches = async (items, batchSize, callback) => {
-  for (let i = 0; i < items.length; i += batchSize) {
-    await Promise.all(items.slice(i, i + batchSize).map(callback));
-  }
-};
-
 const getGames = (() => {
   let games = [];
 
@@ -44,6 +33,9 @@ const getGames = (() => {
                             imagePreview: image(hq: false)
                             releaseDate: release_date(region: all, format: "DD/MM/YYYY")
                             releaseYear: release_date(region: all, format: "YYYY")
+                            releaseDateEur: release_date(region: eur, format: "YYYY-MM-DD")
+                            releaseDateUsa: release_date(region: usa, format: "YYYY-MM-DD")
+                            releaseDateJap: release_date(region: jap, format: "YYYY-MM-DD")
                             isReleased: is_released(region: all)
                             daysBeforeAnniversary: days_before_anniversary
                             age(region: all)
@@ -84,146 +76,85 @@ const getGames = (() => {
   };
 })();
 
-const getYearsData = (() => {
-  let yearData = null;
+const regions = ["eur", "usa", "jap"];
 
-  return async (activeYears, graphql) => {
-    if (yearData) {
-      return yearData;
+const compareReleaseDates = regionsToCompare => (gameA, gameB) => {
+  for (const region of regionsToCompare) {
+    const suffix = `${region[0].toUpperCase()}${region.slice(1)}`;
+    const dateA = gameA[`releaseDate${suffix}`];
+    const dateB = gameB[`releaseDate${suffix}`];
+
+    if (dateA === dateB) {
+      continue;
     }
 
-    yearData = {};
+    if (dateA === null) {
+      return -1;
+    }
 
-    await runInBatches(activeYears, MAX_PARALLEL_QUERIES, async year => {
-      const { data } = await graphql(
-        `
-          fragment GameFragment on MU_Game {
-            id
-            slug(withId: true)
-            name
-            image
-            imagePreview: image(hq: false)
-            device {
-              name
-              logo
-            }
-          }
+    if (dateB === null) {
+      return 1;
+    }
 
-          query ($year: Int!) {
-            mu {
-              allGames_eur: games(
-                release_year: { eur: $year }
-                per_page: 30
-                order_by: { field: release_date_eur }
-              ) {
-                data {
-                  ...GameFragment
-                  releaseDate: release_date(region: eur, format: "DD/MM/YYYY")
-                }
-              }
+    const comparison = dateA
+      .replace(/\?/g, "0")
+      .localeCompare(dateB.replace(/\?/g, "0"));
 
-              unreleasedGames_eur: games(
-                release_year: { eur: $year }
-                has_been_released: { eur: false }
-              ) {
-                data {
-                  id
-                }
-              }
+    if (comparison !== 0) {
+      return comparison;
+    }
+  }
 
-              allGames_usa: games(
-                release_year: { usa: $year }
-                per_page: 30
-                order_by: { field: release_date_usa }
-              ) {
-                data {
-                  ...GameFragment
-                  releaseDate: release_date(region: usa, format: "DD/MM/YYYY")
-                }
-              }
+  return +gameA.id - +gameB.id;
+};
 
-              unreleasedGames_usa: games(
-                release_year: { usa: $year }
-                has_been_released: { usa: false }
-              ) {
-                data {
-                  id
-                }
-              }
+const toYearGame = (game, region) => ({
+  id: game.id,
+  slug: game.slug,
+  name: game.name,
+  image: game.image,
+  imagePreview: game.imagePreview,
+  device: game.device,
+  releaseDate: region === "all" ? game.releaseDate : game.releaseDate[region],
+  ...(region === "all" ? { releaseYear: game.releaseYear } : {}),
+});
 
-              allGames_jap: games(
-                release_year: { jap: $year }
-                per_page: 30
-                order_by: { field: release_date_jap }
-              ) {
-                data {
-                  ...GameFragment
-                  releaseDate: release_date(region: jap, format: "DD/MM/YYYY")
-                }
-              }
+const buildYearsData = (activeYears, games) =>
+  Object.fromEntries(
+    activeYears.map(year => {
+      const yearData = {};
 
-              unreleasedGames_jap: games(
-                release_year: { jap: $year }
-                has_been_released: { jap: false }
-              ) {
-                data {
-                  id
-                }
-              }
+      for (const region of [...regions, "all"]) {
+        const regionsToMatch = region === "all" ? regions : [region];
+        const matchingGames = games
+          .filter(game =>
+            regionsToMatch.some(
+              gameRegion => +game.releaseYear[gameRegion] === year
+            )
+          )
+          .sort(compareReleaseDates(regionsToMatch));
 
-              allGames_all: games(
-                release_year: {
-                  eur: $year
-                  jap: $year
-                  usa: $year
-                  operator: OR
-                }
-                per_page: 30
-                order_by: {
-                  field: release_date_eur
-                  then: {
-                    field: release_date_usa
-                    then: { field: release_date_jap }
-                  }
-                }
-              ) {
-                data {
-                  ...GameFragment
-                  releaseDate: release_date(region: all, format: "DD/MM/YYYY")
-                  releaseYear: release_date(region: all, format: "YYYY")
-                }
-              }
+        yearData[`allGames_${region}`] = {
+          data: matchingGames.map(game => toYearGame(game, region)),
+        };
+        yearData[`unreleasedGames_${region}`] = {
+          data: games
+            .filter(
+              game =>
+                regionsToMatch.some(
+                  gameRegion => +game.releaseYear[gameRegion] === year
+                ) &&
+                regionsToMatch.every(
+                  gameRegion => game.isReleased[gameRegion] === false
+                )
+            )
+            .map(({ id }) => ({ id })),
+        };
+      }
 
-              unreleasedGames_all: games(
-                release_year: {
-                  eur: $year
-                  jap: $year
-                  usa: $year
-                  operator: OR
-                }
-                has_been_released: {
-                  eur: false
-                  jap: false
-                  usa: false
-                  operator: AND
-                }
-              ) {
-                data {
-                  id
-                }
-              }
-            }
-          }
-        `,
-        { year }
-      );
-
-      yearData[year] = data.mu;
-    });
-
-    return yearData;
-  };
-})();
+      return [year, yearData];
+    })
+  );
 
 exports.createPages = async ({ actions, graphql }) => {
   const { createPage } = actions;
@@ -242,7 +173,8 @@ exports.createPages = async ({ actions, graphql }) => {
   const [firstYearWithGames] = activeYears;
   const lastYearWithGames = activeYears[activeYears.length - 1];
 
-  const yearsData = await getYearsData(activeYears, graphql);
+  const games = await getGames(graphql);
+  const yearsData = buildYearsData(activeYears, games);
 
   activeYears.forEach(year => {
     const yearData = yearsData[year];
@@ -274,13 +206,14 @@ exports.createPages = async ({ actions, graphql }) => {
     });
   });
 
-  const games = await getGames(graphql);
-
   for (const game of games) {
+    const { releaseDateEur, releaseDateUsa, releaseDateJap, ...gameData } =
+      game;
+
     createPage({
       path: game.slug,
       component: path.resolve("./src/templates/GameDetails.jsx"),
-      context: { game },
+      context: { game: gameData },
     });
   }
 
